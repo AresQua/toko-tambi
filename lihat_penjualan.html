@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lapor Transaksi - Toko Tambi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #8BC34A;
+            --light-green: #c2e475;
+            --dark-green: #689F38;
+            --bg-gray: #f0f0f0;
+            --text-dark: #1a1a2e;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* HEADER RAMPING & ANIMASI PERSIS INDEX.PHP */
+        .header-container {
+            width: 100%;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+        }
+
+        .header-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(to right, #c2e475ff, #8BC34A, #c2e475ff); 
+            background-size: 200% 100%;
+            animation: gradientMove 8s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: -200% 0%; }
+        }
+
+        .header-content h1 {
+            color: white;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            z-index: 2;
+            margin: 0;
+        }
+
+        /* Gaya untuk Animasi Segitiga di Header */
+        .triangle-container {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            background: linear-gradient(45deg, #8BC34A, #C8E6C9, #c2e475ff); 
+            opacity: 0.8;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        @keyframes triangleMove {
+            0% { transform: translate(0, 0) scale(0.5) rotate(0deg); opacity: 0; }
+            50% { transform: translate(50px, -50px) scale(1) rotate(180deg); opacity: 0.8; }
+            100% { transform: translate(100px, 100px) scale(0.5) rotate(360deg); opacity: 0; }
+        }
+
+        /* Gaya untuk Animasi Klik Partikel */
+        .click-particle {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            background: linear-gradient(45deg, #8BC34A, #C8E6C9, #c2e475ff); 
+            z-index: 9999;
+        }
+
+        /* Card Transaksi */
+        .transaction-card {
+            background: white; border-radius: 15px; margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden;
+            border-left: 5px solid var(--primary-green);
+        }
+
+        .summary-row {
+            padding: 15px 20px; display: flex; justify-content: space-between;
+            align-items: center; cursor: pointer;
+        }
+
+        .detail-table {
+            width: 100%; display: none; padding: 15px 20px;
+            background: #f9fff0; border-top: 1px solid #eee;
+        }
+
+        .detail-table table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+        .detail-table th { text-align: left; color: #666; padding-bottom: 10px; }
+        .detail-table td { padding: 8px 0; border-bottom: 1px solid #eee; }
+
+        .status-badge {
+            background: #e8f5e9; color: var(--dark-green);
+            padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: bold;
+        }
+
+        .rotate { transform: rotate(180deg); }
+        #loading { text-align: center; padding: 50px; color: #888; }
+    </style>
+</head>
+<body>
+
+<header class="header-container" id="header">
+    <div class="header-content"><h1>Catatan Penjualan</h1></div>
+</header>
+
+<div class="content-body">
+    <div id="loading"><i class="fas fa-spinner fa-spin"></i> Menghubungkan ke Database...</div>
+    <div id="salesList"></div>
+</div>  
+
+<script>
+
+// GANTI DENGAN URL WEB APP BARU KAMU
+const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbx_y_VdOrlxE_H3Oyp-0X8xRgODc96UkYncHByckzrUrlvXbMydXfJhnBotxp4QxErx/exec";
+
+async function fetchSales() {
+    try {
+        // Tambahkan target=sales dan timestamp agar data tidak nyangkut di cache browser
+        const targetUrl = SPREADSHEET_URL + "?target=sales&t=" + new Date().getTime();
+        
+        const response = await fetch(targetUrl, {
+            method: 'GET',
+            mode: 'cors', // Memaksa mode CORS
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8',
+            }
+        });
+
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const data = await response.json();
+        
+        if (!data || data.length === 0) {
+            document.getElementById('loading').innerHTML = "<i class='fas fa-info-circle'></i> Belum ada data di Laporan_Penjualan.";
+            return;
+        }
+
+        processData(data);
+    } catch (e) {
+        console.error("Detail Error:", e);
+        document.getElementById('loading').innerHTML = `
+            <i class="fas fa-exclamation-triangle"></i><br>
+            <small>Gagal memuat data. <br> Pastikan Deployment sudah 'Anyone'.</small>
+        `;
+    }
+}
+
+    function processData(rows) {
+        const groups = {};
+        
+        // Mengelompokkan berdasarkan Tanggal + Jam (Detik yang sama)
+        rows.forEach(row => {
+            const txId = row[0] + " " + row[1]; // Tanggal + Jam
+            if (!groups[txId]) {
+                groups[txId] = {
+                    tanggal: row[0], jam: row[1],
+                    totalItems: 0, totalOmset: 0,
+                    details: []
+                };
+            }
+            groups[txId].totalItems += row[4]; // Jumlah
+            groups[txId].totalOmset += row[6]; // Total Harga
+            groups[txId].details.push(row);
+        });
+
+        renderList(groups);
+    }
+
+    function renderList(groups) {
+        const container = document.getElementById('salesList');
+        document.getElementById('loading').style.display = 'none';
+        
+        let html = '';
+        Object.keys(groups).reverse().forEach(id => {
+            const tx = groups[id];
+            html += `
+                <div class="transaction-card">
+                    <div class="summary-row" onclick="toggleDetail('${id}')">
+                        <div>
+                            <small style="color:#888">${tx.tanggal} • ${tx.jam}</small>
+                            <div style="font-weight:bold; font-size:1.1em; color:var(--dark-green);">Rp ${tx.totalOmset.toLocaleString()}</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:15px">
+                            <span class="status-badge">${tx.totalItems} Item</span>
+                            <i class="fas fa-chevron-down" id="icon-${id}" style="color:#ccc; transition:0.3s"></i>
+                        </div>
+                    </div>
+                    <div class="detail-table" id="detail-${id}">
+                        <table>
+                            <thead><tr><th>Produk</th><th>Qty</th><th>Total</th></tr></thead>
+                            <tbody>
+                                ${tx.details.map(d => `
+                                    <tr>
+                                        <td>${d[2]}</td>
+                                        <td>${d[4]}x</td>
+                                        <td>Rp ${d[6].toLocaleString()}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function toggleDetail(id) {
+        const el = document.getElementById(`detail-${id}`);
+        const icon = document.getElementById(`icon-${id}`);
+        const isOpen = el.style.display === 'block';
+        el.style.display = isOpen ? 'none' : 'block';
+        icon.classList.toggle('rotate', !isOpen);
+    }
+
+// Panggil saat halaman dimuat
+window.onload = () => {
+    loadProducts();
+    // Animasi partikel tetap jalan
+    for (let i = 0; i < 1; i++) createRandomTriangle();
+};
+
+    let cart = {};
+    const colorPalette = ["#C8E6C9", "#8BC34A", "#689F38", "#AED581", "#DCEDC8"];
+    const header = document.querySelector('.header-container');
+
+    // --- LOGIKA ANIMASI PARTIKEL (SALINAN PERSIS INDEX.PHP) ---
+
+    // 1. Partikel Header (Triangle)
+    const numberOfTriangles = 20;
+    function createRandomTriangle() {
+        const triangle = document.createElement('div');
+        triangle.classList.add('triangle-container');
+        const size = Math.random() * 20 + 10;
+        triangle.style.width = `${size}px`;
+        triangle.style.height = `${size}px`;
+        
+        // Posisi acak di dalam header
+        const x = Math.random() * header.offsetWidth;
+        const y = Math.random() * header.offsetHeight;
+        
+        triangle.style.left = `${x}px`;
+        triangle.style.top = `${y}px`;
+        triangle.style.background = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+        
+        // Menggunakan CSS Animation triangleMove yang ada di style kamu
+        triangle.style.animation = `triangleMove ${Math.random() * 10 + 5}s ease-in-out infinite`;
+        
+        header.appendChild(triangle);
+    }
+
+    // Inisialisasi Segitiga
+    for (let i = 0; i < numberOfTriangles; i++) {
+        createRandomTriangle();
+    }
+
+    // Loop Segitiga jika animasi selesai
+    document.addEventListener('animationend', (event) => {
+        if (event.target.classList.contains('triangle-container')) {
+            event.target.remove();
+            createRandomTriangle();
+        }
+    });
+
+    // 2. Partikel Klik (Burst 5 Partikel)
+    document.addEventListener('click', (event) => {
+        // Jangan jalankan partikel klik jika yang diklik adalah tombol yang punya fungsi sendiri
+        const particleCount = 5;
+        for (let i = 0; i < particleCount; i++) {
+            createClickParticle(event.pageX, event.pageY);
+        }
+    });
+
+    function createClickParticle(x, y) {
+        const particle = document.createElement('div');
+        particle.classList.add('click-particle');
+        const size = Math.random() * 15 + 5;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.background = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        
+        document.body.appendChild(particle);
+
+        particle.animate([
+            { transform: `translate(0, 0) scale(1) rotate(0deg)`, opacity: 1 },
+            { transform: `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) scale(0) rotate(360deg)`, opacity: 0 }
+        ], {
+            duration: 500,
+            easing: 'ease-out',
+            fill: 'forwards'
+        });
+
+        setTimeout(() => { particle.remove(); }, 500);
+    }
+
+</script>
+</body>
+</html>

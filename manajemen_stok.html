@@ -5,393 +5,316 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --primary-green: #8BC34A;
-            --light-green: #c2e475;
-            --dark-green: #689F38;
-            --bg-gray: #f0f0f0;
-            --text-dark: #1a1a2e;
-        }
-
-        body {
-            margin: 0;
-            margin-bottom: 100px;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: var(--bg-gray);
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
-
-        /* HEADER RAMPING & ANIMASI PERSIS INDEX.PHP */
+        :root { --primary-green: #8BC34A; --bg-gray: #f0f0f0; --dark-green: #689F38; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-gray); overflow-x: hidden; padding-bottom: 100px; }
+        
+        /* HEADER STYLE LAPOR_TRANSAKSI */
         .header-container {
-            width: 100%;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            min-height: 120px;
+            width: 100%; padding: 20px 0; display: flex; flex-direction: column; align-items: center;
+            position: relative; overflow: hidden; min-height: 100px;
+            background: linear-gradient(to right, #c2e475, #8BC34A);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+        .header-content h1 { color: white; font-size: 1.4em; z-index: 2; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); margin: 0; }
 
-        .header-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 100%;
-            background: linear-gradient(to right, #c2e475ff, #8BC34A, #c2e475ff); 
-            background-size: 200% 100%;
-            animation: gradientMove 8s linear infinite;
-            z-index: -1;
-        }
-
-        @keyframes gradientMove {
-            0% { background-position: 0% 0%; }
-            100% { background-position: -200% 0%; }
-        }
-
-        .header-content h1 {
-            color: white;
-            font-size: 1.8em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            z-index: 2;
-            margin: 0;
-        }
-
-        /* Gaya untuk Animasi Segitiga di Header */
-        .triangle-container {
-            position: absolute;
-            width: 50px;
-            height: 50px;
+        /* ANIMASI PARTIKEL & SEGITIGA */
+        .triangle-container, .click-particle {
+            position: absolute; width: 30px; height: 30px;
             clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            background: linear-gradient(45deg, #8BC34A, #C8E6C9, #c2e475ff); 
-            opacity: 0.8;
-            transition: opacity 0.5s ease;
-            z-index: 1;
+            background: rgba(255,255,255,0.2); z-index: 1;
         }
-
-        @keyframes triangleMove {
-            0% { transform: translate(0, 0) scale(0.5) rotate(0deg); opacity: 0; }
-            50% { transform: translate(50px, -50px) scale(1) rotate(180deg); opacity: 0.8; }
-            100% { transform: translate(100px, 100px) scale(0.5) rotate(360deg); opacity: 0; }
-        }
-
-        /* Gaya untuk Animasi Klik Partikel */
-        .click-particle {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            background: linear-gradient(45deg, #8BC34A, #C8E6C9, #c2e475ff); 
-            z-index: 9999;
-        }
-
-        .nav-tabs {
-            display: flex; background: white; padding: 5px; top: 0; z-index: 10;
-            overflow-x: auto; white-space: nowrap; border-bottom: 1px solid #ddd; justify-content: center; /* Membuat tombol ke tengah */
-        }
-        .nav-tabs div {
-            padding: 10px 20px; font-size: 0.9em; font-weight: bold; color: #888;
-            cursor: pointer; transition: 0.3s; border-radius: 20px;
-        }
-        .nav-tabs div.active { color: white; background: var(--primary-green); }
 
         .container { padding: 15px; max-width: 600px; margin: auto; }
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .card {
-            position: relative; /* Wajib agar tombol X bisa menempel di pojok */
+        /* TAB TANGGAL & JAM (KONSEP NEURA) */
+        .datetime-card {
+            background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px;
+            display: flex; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
+        .datetime-card div { flex: 1; }
 
-        .remove-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #ff5252;
-            color: white;
-            width: 28px;  /* Sedikit lebih besar biar lega */
-            height: 28px;
-            border-radius: 50%;
-            
-            /* Kuncinya di sini */
-            display: flex;
-            align-items: center;      /* Tengah vertikal */
-            justify-content: center;   /* Tengah horizontal */
-            
-            font-size: 14px;          /* Sesuaikan ukuran X nya */
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 10;
-            line-height: 0;           /* Mematikan spasi bawaan teks */
+        /* ENTRY CARD */
+        .entry-card {
+            background: white; border-radius: 15px; padding: 18px; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;
+            animation: slideUp 0.3s ease-out;
         }
-
-        .remove-btn i {
-            /* Jika pakai FontAwesome, kadang perlu reset margin */
-            margin: 0;
-            padding: 0;
-}
-        /* FORM & CARDS ALA NEURA */
-        .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        label { display: block; font-size: 0.7rem; font-weight: bold; margin-bottom: 5px; color: #777; text-transform: uppercase; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; margin-bottom: 12px; font-size: 1rem; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* TABEL DATA */
-        table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
-        th { text-align: left; padding: 10px 5px; border-bottom: 2px solid var(--primary-green); }
-        td { padding: 12px 5px; border-bottom: 1px solid #eee; }
+        .remove-btn { position: absolute; top: -10px; right: -10px; background: #ff5252; color: white; 
+                      width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; 
+                      justify-content: center; font-size: 12px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-        /* FOOTER ACTION */
-        .footer-action { position: fixed; bottom: 0; width: 100%; background: white; padding: 14px; box-sizing: border-box; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 100; }
-        .btn-save { width: 100%; background: var(--primary-green); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 900; }
+        label { display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; color: #777; text-transform: uppercase; }
+        
+        input, select {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px;
+            box-sizing: border-box; margin-bottom: 12px; font-size: 1rem;
+            background: #f9f9f9; transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary-green); outline: none; background: white; }
 
-        /* PARTIKEL & SEGITIGA */
-        .triangle-container, .click-particle { position: absolute; width: 30px; height: 30px; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); background: rgba(255,255,255,0.2); z-index: 1; }
+        .btn-add {
+            width: 100%; background: transparent; border: 2px dashed #bbb;
+            color: #888; padding: 15px; border-radius: 15px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-add:active { background: #e0e0e0; transform: scale(0.98); }
+
+        .footer-action {
+            position: fixed; bottom: 0; width: 100%; background: white;
+            padding: 15px; box-sizing: border-box; display: flex; gap: 10px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 100;
+        }
+        .btn-save {
+            flex: 1; background: var(--primary-green); color: white;
+            border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1.1em;
+            letter-spacing: 1px; box-shadow: 0 4px 10px rgba(139, 195, 74, 0.3);
+        }
     </style>
 </head>
 <body>
 
 <header class="header-container" id="header">
-    <div class="header-content"><h1>Manajemen Stok Tambi</h1></div>
+    <div class="header-content"><h1>Gudang Toko Tambi</h1></div>
 </header>
 
-<div class="nav-tabs" id="mainTabs">
-    <div class="active" onclick="openTab('stokMasuk')">Stok Masuk</div>
-    <div onclick="openTab('packing')">Packing</div>
-    <div onclick="openTab('dataGudang')">Data Gudang</div>
-    <div onclick="openTab('dataProduk')">Data Produk</div>
-</div>
-
 <div class="container">
-    <div id="stokMasuk" class="tab-content active">
-        <div class="card" style="display:flex; gap:10px">
-            <div style="flex:1"><label>Tanggal</label><input type="date" id="dateMasuk"></div>
-            <div style="flex:1"><label>Jam</label><input type="time" id="timeMasuk"></div>
+    <div class="datetime-card">
+        <div>
+            <label><i class="fa fa-calendar"></i> Tanggal</label>
+            <input type="date" id="mainDate">
         </div>
-        <div id="entryMasukContainer"></div>
-        <button onclick="addEntryMasuk()" style="width:100%; padding:10px; border:2px dashed #ccc; background:none; border-radius:10px; color:#888;">+ Tambah Baris Masuk</button>
-    </div>
-
-    <div id="packing" class="tab-content">
-        <div class="card"><label>Pilih Barang Mentah (Dari Gudang)</label>
-            <select id="pilihMentah" onchange="updateEstimasi()">
-                <option value="">-- Pilih --</option>
-            </select>
-            <label>Jumlah Bal yang Dibuka</label>
-            <input type="number" id="qtyMentah" value="1" oninput="updateEstimasi()">
-            <label>Hasil Real (Bungkus)</label>
-            <input type="number" id="hasilReal" placeholder="Contoh: 48">
-            <small id="infoEstimasi" style="color:var(--dark-green); font-weight:bold"></small>
+        <div>
+            <label><i class="fa fa-clock"></i> Jam</label>
+            <input type="time" id="mainTime">
         </div>
     </div>
 
-    <div id="dataGudang" class="tab-content">
-        <input type="text" id="cariGudang" placeholder="Cari di gudang..." onkeyup="filterTabel('tabelGudangBody', this.value)">
-        <div class="card" style="margin-top:10px; padding:5px;">
-            <table>
-                <thead><tr><th>Produk</th><th>Stok</th><th>Harga</th></tr></thead>
-                <tbody id="tabelGudangBody"></tbody>
-            </table>
+    <div id="entryContainer">
         </div>
-    </div>
 
-    <div id="dataProduk" class="tab-content">
-        <input type="text" id="cariProduk" placeholder="Cari di etalase..." onkeyup="filterTabel('tabelProdukBody', this.value)">
-        <div class="card" style="margin-top:10px; padding:5px;">
-            <table>
-                <thead><tr><th>Produk Jadi</th><th>Stok</th><th>Harga</th></tr></thead>
-                <tbody id="tabelProdukBody"></tbody>
-            </table>
-        </div>
-    </div>
+    <button class="btn-add" onclick="addEntry()">
+        <i class="fa fa-plus-circle"></i> TAMBAH BARIS PRODUK
+    </button>
 </div>
 
-<div class="footer-action" id="footerSave">
-    <button class="btn-save" id="btnSimpan" onclick="prosesSimpan()">SIMPAN DATA</button>
+<div class="footer-action">
+    <button class="btn-save" id="btnSimpan" onclick="simpanData()">SIMPAN DATA MASUK</button>
 </div>
 
-<datalist id="listGudang"></datalist>
+<datalist id="listProdukGudang"></datalist>
+
+<div class="datetime-card" style="margin-top: 30px; flex-direction: column;">
+    <label><i class="fa fa-boxes"></i> Stok Gudang Saat Ini</label>
+    <input type="text" id="cariGudang" placeholder="Cari barang di gudang..." onkeyup="filterStok()">
+    <div id="tabelStok" style="margin-top:10px;">
+        </div>
+</div>
 
 <script>
-    const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbx9RPF5GUhTwEqmqbv9vYJVFm7ROx__M33uFJAILPD2jrXchJM1U_psI6fJO2z-RdBY/exec";
-    let dbGudang = [], dbProduk = [];
-    let currentTab = 'stokMasuk';
+    const SPREADSHEET_URL = "https://script.google.com/macros/s/AKfycbxHHnh8X_wLn85hEsVVXaMLZJphy0UyoEsZGt1jr9SQaNBb4II7fYlcxJMKlSI4O4o/exec";
+    let dataMasterGudang = [];
 
-    function openTab(id) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.nav-tabs div').forEach(t => t.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
-        currentTab = id;
-        
-        // Sembunyikan footer jika di tab Data
-        document.getElementById('footerSave').style.display = (id === 'dataGudang' || id === 'dataProduk') ? 'none' : 'block';
+    // Fungsi Format Rupiah (Konsep Neura)
+    function formatRupiah(angka) {
+        let val = angka.replace(/\D/g, "");
+        return val.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
-    async function fetchData() {
-        const [resG, resP] = await Promise.all([
-            fetch(SPREADSHEET_URL + "?target=gudang").then(r => r.json()),
-            fetch(SPREADSHEET_URL + "?target=produk").then(r => r.json())
-        ]);
-        dbGudang = resG; dbProduk = resP;
-        renderTabel();
-        populateSelect();
+    // Inisialisasi Tanggal & Jam Otomatis
+    function initDateTime() {
+        const now = new Date();
+        document.getElementById('mainDate').value = now.toISOString().split('T')[0];
+        document.getElementById('mainTime').value = now.toTimeString().slice(0,5);
     }
 
-    function renderTabel() {
-        document.getElementById('tabelGudangBody').innerHTML = dbGudang.map(g => `
-            <tr><td><b>${g.nama}</b><br><small>${g.kode}</small></td><td>${g.stok} Bal</td><td>@${g.harga.toLocaleString()}</td></tr>
-        `).join('');
-
-        document.getElementById('tabelProdukBody').innerHTML = dbProduk.map(p => `
-            <tr><td><b>${p.nama}</b><br><small>${p.kode}</small></td><td>${p.stok || 0} Pcs</td><td>@${p.harga.toLocaleString()}</td></tr>
-        `).join('');
+    async function fetchMaster() {
+        try {
+            const resp = await fetch(SPREADSHEET_URL + "?target=gudang");
+            dataMasterGudang = await resp.json();
+            
+            // Populate Datalist
+            const dl = document.getElementById('listProdukGudang');
+            dl.innerHTML = dataMasterGudang.map(g => `<option value="${g.nama}">`).join('');
+            
+            addEntry(); 
+        } catch(e) { console.error("Gagal load data gudang"); }
     }
 
-    function populateSelect() {
-        const sel = document.getElementById('pilihMentah');
-        sel.innerHTML = '<option value="">-- Pilih --</option>' + dbGudang.map(g => `<option value="${g.nama}">${g.nama}</option>`).join('');
-        document.getElementById('listGudang').innerHTML = dbGudang.map(g => `<option value="${g.nama}">`).join('');
+    function addEntry() {
+        const container = document.getElementById('entryContainer');
+        const id = Date.now();
+        const card = document.createElement('div');
+        card.className = 'entry-card';
+        card.id = `card-${id}`;
+        card.innerHTML = `
+            <div class="remove-btn" onclick="removeEntry('${id}')"><i class="fa fa-times"></i></div>
+            
+            <label>Nama Barang (Ketik/Pilih)</label>
+            <input type="text" list="listProdukGudang" class="p-nama" placeholder="Cari produk..." onchange="autoFill(this, '${id}')">
+            
+            <div style="display:flex; gap:10px">
+                <div style="flex:1">
+                    <label>Jumlah (Bal)</label>
+                    <input type="number" class="p-qty" inputmode="numeric" placeholder="0">
+                </div>
+                <div style="flex:1">
+                    <label>Berat (Kg)</label>
+                    <input type="number" step="0.1" class="p-berat" inputmode="decimal" placeholder="0.0">
+                </div>
+            </div>
+            
+            <label>Harga Modal (Rp)</label>
+            <input type="text" class="p-harga" inputmode="numeric" placeholder="0" onkeyup="this.value = formatRupiah(this.value)">
+        `;
+        container.appendChild(card);
     }
 
-    function addEntryMasuk() {
-    const container = document.getElementById('entryMasukContainer');
-    const rowCount = container.children.length; // Cek sudah ada berapa kartu
-    const id = "row-" + Date.now();
-    
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.id = id;
-
-    // Logika: Jika kartu ke-2, ke-3, dst (rowCount > 0), baru tambahkan tombol hapus
-    let deleteBtn = '';
-    if (rowCount > 0) {
-        // Di dalam fungsi addEntryMasuk() bagian deleteBtn:
-        deleteBtn = `<div class="remove-btn" onclick="document.getElementById('${id}').remove()">
-                        <i class="fa fa-times"></i>
-                    </div>`;
+    function removeEntry(id) {
+        if(document.querySelectorAll('.entry-card').length > 1) {
+            document.getElementById(`card-${id}`).remove();
+        }
     }
 
-    div.innerHTML = `
-        ${deleteBtn}
-        <label>Nama Barang</label>
-        <input type="text" list="listProdukGudang" class="in-nama" placeholder="Pilih produk...">
-        <div style="display:flex; gap:10px">
-            <div style="flex:1"><label>Qty (Bal)</label><input type="number" class="in-qty"></div>
-            <div style="flex:1"><label>Harga/Bal</label><input type="number" class="in-harga"></div>
-        </div>`;
-    
-    container.appendChild(div);
-}
+    function autoFill(input, id) {
+        const item = dataMasterGudang.find(g => g.nama === input.value);
+        if (item) {
+            const card = document.getElementById(`card-${id}`);
+            card.querySelector('.p-berat').value = item.berat;
+            card.querySelector('.p-harga').value = formatRupiah(item.harga.toString());
+        }
+    }
 
-    async function prosesSimpan() {
+    async function simpanData() {
         const btn = document.getElementById('btnSimpan');
-        btn.disabled = true;
-        btn.innerText = "Processing...";
-        
-        let payload = { type: currentTab };
-        // Logika pengumpulan data sesuai tab aktif...
-        
-        alert("Fitur simpan sedang dihubungkan ke Apps Script!");
-        btn.disabled = false; btn.innerText = "SIMPAN DATA";
-    }
+        const cards = document.querySelectorAll('.entry-card');
+        const items = [];
 
-    function filterTabel(bodyId, query) {
-        const q = query.toLowerCase();
-        document.querySelectorAll(`#${bodyId} tr`).forEach(tr => {
-            tr.style.display = tr.innerText.toLowerCase().includes(q) ? '' : 'none';
+        cards.forEach(c => {
+            const hrgRaw = c.querySelector('.p-harga').value.replace(/\./g, "");
+            items.push({
+                nama: c.querySelector('.p-nama').value,
+                qty: c.querySelector('.p-qty').value,
+                berat: c.querySelector('.p-berat').value,
+                harga: hrgRaw
+            });
         });
-    }
 
-    window.onload = () => {
-        const d = new Date();
-        document.getElementById('dateMasuk').value = d.toISOString().split('T')[0];
-        document.getElementById('timeMasuk').value = d.toTimeString().slice(0,5);
-        addEntryMasuk();
-        fetchData();
-        for (let i = 0; i < 1; i++) createRandomTriangle();
-    };
+        if (items.some(i => !i.nama || !i.qty)) return alert("Mohon lengkapi Nama dan Jumlah!");
 
-    let cart = {};
-    const colorPalette = ["#C8E6C9", "#8BC34A", "#689F38", "#AED581", "#DCEDC8"];
-    const header = document.querySelector('.header-container');
+        btn.disabled = true;
+        btn.innerText = "SEDANG MENYIMPAN...";
 
-    // --- LOGIKA ANIMASI PARTIKEL (SALINAN PERSIS INDEX.PHP) ---
+        const payload = {
+            type: 'stok_masuk',
+            manualDate: document.getElementById('mainDate').value,
+            manualTime: document.getElementById('mainTime').value,
+            items: items
+        };
 
-    // 1. Partikel Header (Triangle)
-    const numberOfTriangles = 20;
-    function createRandomTriangle() {
-        const triangle = document.createElement('div');
-        triangle.classList.add('triangle-container');
-        const size = Math.random() * 20 + 10;
-        triangle.style.width = `${size}px`;
-        triangle.style.height = `${size}px`;
-        
-        // Posisi acak di dalam header
-        const x = Math.random() * header.offsetWidth;
-        const y = Math.random() * header.offsetHeight;
-        
-        triangle.style.left = `${x}px`;
-        triangle.style.top = `${y}px`;
-        triangle.style.background = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-        
-        // Menggunakan CSS Animation triangleMove yang ada di style kamu
-        triangle.style.animation = `triangleMove ${Math.random() * 10 + 5}s ease-in-out infinite`;
-        
-        header.appendChild(triangle);
-    }
-
-    // Inisialisasi Segitiga
-    for (let i = 0; i < numberOfTriangles; i++) {
-        createRandomTriangle();
-    }
-
-    // Loop Segitiga jika animasi selesai
-    document.addEventListener('animationend', (event) => {
-        if (event.target.classList.contains('triangle-container')) {
-            event.target.remove();
-            createRandomTriangle();
+        try {
+            await fetch(SPREADSHEET_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+            alert("✅ Laporan Stok Berhasil Disimpan!");
+            location.reload();
+        } catch (e) {
+            alert("❌ Gagal Terhubung ke Server.");
+            btn.disabled = false;
+            btn.innerText = "SIMPAN DATA MASUK";
         }
-    });
+    }
 
-    // 2. Partikel Klik (Burst 5 Partikel)
-    document.addEventListener('click', (event) => {
-        // Jangan jalankan partikel klik jika yang diklik adalah tombol yang punya fungsi sendiri
-        const particleCount = 5;
-        for (let i = 0; i < particleCount; i++) {
-            createClickParticle(event.pageX, event.pageY);
-        }
+    // Animasi Partikel Persis Lapor_Transaksi
+    document.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON' || e.target.closest('.remove-btn')) return;
+        for (let i = 0; i < 5; i++) createClickParticle(e.pageX, e.pageY);
     });
 
     function createClickParticle(x, y) {
-        const particle = document.createElement('div');
-        particle.classList.add('click-particle');
-        const size = Math.random() * 15 + 5;
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.background = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-        particle.style.left = `${x}px`;
-        particle.style.top = `${y}px`;
-        
-        document.body.appendChild(particle);
+        const p = document.createElement('div');
+        p.className = 'click-particle';
+        p.style.left = x + 'px'; p.style.top = y + 'px';
+        p.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+        document.body.appendChild(p);
+        p.animate([
+            { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+            { transform: `translate(${(Math.random()-0.5)*100}px, ${(Math.random()-0.5)*100}px) scale(0)`, opacity: 0 }
+        ], { duration: 500, easing: 'ease-out' });
+        setTimeout(() => p.remove(), 500);
+    }
 
-        particle.animate([
-            { transform: `translate(0, 0) scale(1) rotate(0deg)`, opacity: 1 },
-            { transform: `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) scale(0) rotate(360deg)`, opacity: 0 }
-        ], {
-            duration: 500,
-            easing: 'ease-out',
-            fill: 'forwards'
+    window.onload = () => {
+        initDateTime();
+        fetchMaster();
+        // Generate segitiga background header
+        const header = document.getElementById('header');
+        for (let i = 0; i < 10; i++) {
+            const t = document.createElement('div');
+            t.className = 'triangle-container';
+            t.style.left = Math.random() * 100 + '%';
+            t.style.top = Math.random() * 100 + '%';
+            t.style.transform = `rotate(${Math.random() * 360}deg)`;
+            header.appendChild(t);
+        }
+    };
+
+    function renderStokGudang() {
+        const container = document.getElementById('tabelStok');
+        if (dataMasterGudang.length === 0) {
+            container.innerHTML = "<p style='text-align:center; color:#888;'>Data kosong</p>";
+            return;
+        }
+
+        let html = `<table style="width:100%; border-collapse: collapse; font-size: 0.9em;">
+            <tr style="border-bottom: 2px solid var(--primary-green); text-align: left;">
+                <th style="padding: 10px 5px;">Produk</th>
+                <th style="padding: 10px 5px;">Stok</th>
+                <th style="padding: 10px 5px;">Terakhir</th>
+            </tr>`;
+
+        dataMasterGudang.forEach(g => {
+            html += `
+            <tr class="item-gudang" style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 12px 5px;">
+                    <b style="color:var(--dark-green)">${g.nama}</b><br>
+                    <small style="color:#999">${g.kode}</small>
+                </td>
+                <td style="padding: 12px 5px;">${g.stok} Bal</td>
+                <td style="padding: 12px 5px;">
+                    <small>@${formatRupiah(g.harga.toString())}</small><br>
+                    <small>${g.berat} Kg</small>
+                </td>
+            </tr>`;
         });
+        html += `</table>`;
+        container.innerHTML = html;
+    }
 
-        setTimeout(() => { particle.remove(); }, 500);
+    function filterStok() {
+        let input = document.getElementById('cariGudang').value.toLowerCase();
+        let items = document.querySelectorAll('.item-gudang');
+        items.forEach(item => {
+            let text = item.innerText.toLowerCase();
+            item.style.display = text.includes(input) ? "" : "none";
+        });
+    }
+
+    // Update fungsi fetchMaster agar juga memanggil renderStokGudang
+    async function fetchMaster() {
+        try {
+            const resp = await fetch(SPREADSHEET_URL + "?target=gudang");
+            dataMasterGudang = await resp.json();
+            
+            const dl = document.getElementById('listProdukGudang');
+            dl.innerHTML = dataMasterGudang.map(g => `<option value="${g.nama}">`).join('');
+            
+            renderStokGudang(); // Panggil ini
+            if(document.querySelectorAll('.entry-card').length === 0) addEntry(); 
+        } catch(e) { console.error(e); }
     }
 </script>
 </body>
-
 </html>

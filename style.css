@@ -1,0 +1,259 @@
+/* ===========================================
+      PROJECT SEKAI GLOBAL THEME – TOKO TAMBI
+      (Wave 1 – Foundation Layer)
+=========================================== */
+
+:root {
+    /* MAIN COLORS (Project Sekai vibes) */
+    --sekai-cyan: #8BC34A;
+    --sekai-cyan-light: #8BC34A;
+    --sekai-teal: #c2e475ff;
+    --sekai-purple: #c2e475ff;
+    --sekai-pink: #C8E6C9;
+    --b-aja: #424242;
+
+    /* GLASS EFFECT */
+    --glass-white: rgba(255,255,255,0.6);
+    --glass-border: rgba(255,255,255,0.25);
+
+    /* TEXT */
+    --text-dark: #1a1a2e;
+    --text-light: #ffffff;
+
+    /* BACKGROUND */
+    --bg-main: #C8E6C9;
+
+    /* SHADOW */
+    --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.08);
+    --shadow-hard: 0 8px 20px rgba(0,0,0,0.18);
+
+    /* BORDER RADIUS */
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+}
+
+/* RESET */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+/* ===========================================
+    GLOBAL CONTAINER (Glass UI)
+=========================================== */
+.container {
+    max-width: 900px;
+    margin: 25px auto;
+    padding: 25px;
+    background: var(--glass-white);
+    backdrop-filter: blur(15px);    
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-soft);
+    animation: fadeIn 0.6s ease;    
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================================
+    HEADER STYLE (Sekai Gradient)
+=========================================== */
+.header {
+    text-align: center;
+    padding: 22px;
+    font-size: 1.9em;
+    font-weight: bold;
+    border-radius: 0 0 20px 20px;
+    color: var(--text-light);
+    background: linear-gradient(
+        135deg,
+        var(--sekai-cyan),
+        var(--sekai-purple),
+        var(--sekai-pink)
+    );
+    background-size: 200% 200%;
+    animation: sekaiFlow 6s infinite linear;
+}
+
+@keyframes sekaiFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ===========================================
+    INPUT FIELD Modern Glass
+=========================================== */
+select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0px 15px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(10px);
+    font-size: 1em;
+    transition: 0.25s;
+}
+
+input {
+    width: 97%;
+    padding: 12px;
+    margin: 8px 0px 15px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(10px);
+    font-size: 1em;
+    transition: 0.25s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--sekai-cyan);
+    box-shadow: 0 0 8px rgba(41,208,228,0.4);
+}
+
+/* ===========================================
+    BUTTON – Neon Glow
+=========================================== */
+button {
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--sekai-cyan), var(--sekai-purple));
+    color: white;
+    font-size: 1.05em;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: var(--shadow-soft);
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(186, 124, 251, 0.35);
+}
+
+/* ===========================================
+    DASHBOARD NAV CARDS (Index.html)
+=========================================== */
+.nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.nav-card {
+    background: var(--glass-white);
+    border: 1px solid var(--glass-border);
+    padding: 25px;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(10px);
+}
+
+.nav-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hard);
+    border-color: var(--sekai-cyan);
+    background: rgba(255,255,255,0.8);
+}
+
+/* ===========================================
+    PRODUCT GRID (Transaksi)
+=========================================== */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    padding: 15px;
+    border-radius: var(--radius-md);
+    background: var(--glass-white);
+    border: 2px solid transparent;
+    text-align: center;
+    transition: 0.25s ease;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hard);
+}
+
+.card.selected {
+    border-color: var(--sekai-cyan);
+    transform: translateY(-6px) scale(1.03);
+}
+
+.card.habis {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ===========================================
+    FOOTER CART
+=========================================== */
+.footer-cart {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: var(--glass-white);
+    backdrop-filter: blur(12px);
+    border-radius: 25px 25px 0 0;
+    padding: 18px;
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.15);
+    transform: translateY(110%);
+    transition: 0.45s;
+}
+
+.footer-cart.visible {
+    transform: translateY(0);
+}
+
+/* ===========================================
+    TABLE STYLE – Rhythm Game Clean UI
+=========================================== */
+table {
+    width: 100%;
+    background: var(--glass-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+}
+
+th {
+    padding: 12px;
+    background: var(--b-aja);
+    color: white;
+    text-align: left;
+}
+
+td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Hover row highlight */
+tr:hover td {
+    background: rgba(41,208,228,0.08);
+}

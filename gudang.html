@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manajemen Gudang</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="core.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Manajemen Gudang</h1>
+
+    <h2>Tambah Stok Gudang</h2>
+    <input id="nama" placeholder="Nama Barang">
+    <input id="bal" type="number" placeholder="Jumlah Bal">
+    <input id="isi" type="number" placeholder="Isi per Bal">
+    <input id="satuan" placeholder="Satuan (kg/gr/ltr)">
+    
+    <button onclick="tambahGudang()">Tambah</button>
+
+    <h2>Retur / Barang Rusak</h2>
+    <select id="returKode"></select>
+    <input id="returBal" type="number" placeholder="Jumlah Bal Rusak">
+    <input id="returAlasan" placeholder="Alasan (opsional)">
+    
+    <button onclick="returGudang()">Proses Retur</button>
+
+    <h2>Data Gudang</h2>
+    <table id="tabelGudang">
+        <thead>
+            <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Bal</th>
+                <th>Isi</th>
+                <th>Satuan</th>
+                <th>Waktu</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+// Fungsi untuk memuat data saat halaman dibuka
+window.onload = function() {
+    loadGudang();
+};
+
+async function loadGudang() {
+    try {
+        const data = await apiGet("gudang");
+        
+        // Isi dropdown retur
+        const select = qs("#returKode");
+        if(select) {
+            select.innerHTML = "";
+            data.forEach(d => {
+                select.innerHTML += `<option value="${d.kode}">${d.kode} - ${d.nama}</option>`;
+            });
+        }
+
+        // Tampilkan ke tabel
+        const tb = qs("#tabelGudang tbody");
+        if(tb) {
+            tb.innerHTML = "";
+            data.forEach(d => {
+                tb.innerHTML += createRow([d.kode, d.nama, d.bal, d.isi, d.satuan, d.waktu]);
+            });
+        }
+    } catch (e) {
+        console.log("Gagal memuat data: " + e);
+    }
+}
+
+async function tambahGudang() {
+    // Ambil data dari kotak input
+    const nama = qs("#nama").value;
+    const bal = qs("#bal").value;
+    const isi = qs("#isi").value;
+    const satuan = qs("#satuan").value;
+
+    // Cek kalau ada yang kosong
+    if (!nama || !bal || !isi) {
+        alert("Mohon isi semua data barang!");
+        return;
+    }
+
+    try {
+        // Kirim data ke Google
+        const respon = await apiPost({
+            action: "tambah_gudang",
+            items: [{
+                nama: nama,
+                bal: Number(bal),
+                isi: Number(isi),
+                satuan: satuan
+            }]
+        });
+
+        if (respon.status === "success") {
+            alert("Data Berhasil Disimpan!");
+            // Kosongkan kotak input
+            qs("#nama").value = "";
+            qs("#bal").value = "";
+            qs("#isi").value = "";
+            qs("#satuan").value = "";
+            // Refresh tabel
+            loadGudang();
+        } else {
+            alert("Gagal simpan: " + (respon.message || "Cek Google Script"));
+        }
+    } catch (e) {
+        alert("Error Koneksi: " + e);
+    }
+}
+
+async function returGudang() {
+    const kode = qs("#returKode").value;
+    const bal = qs("#returBal").value;
+    const alasan = qs("#returAlasan").value;
+
+    await apiPost({
+        action: "retur_gudang",
+        kode: kode,
+        bal_rusak: Number(bal),
+        alasan: alasan
+    });
+    alert("Retur Berhasil!");
+    loadGudang();
+}
+</script>
+
+</body>
+</html>

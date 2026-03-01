@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laporan Penjualan</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="core.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Laporan Penjualan</h1>
+
+    <table id="tabelJual">
+        <thead>
+            <tr>
+                <th>Tanggal</th>
+                <th>Jam</th>
+                <th>Nama Produk</th>
+                <th>Kode</th>
+                <th>Jumlah</th>
+                <th>Harga</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+async function load() {
+    const data = await apiGet("penjualan"); // data mentah row per item
+    const tb = qs("#tabelJual tbody");
+    tb.innerHTML = "";
+
+    if (!data || data.length === 0) {
+        tb.innerHTML = "<tr><td colspan='7' style='text-align:center;color:#888'>Belum ada data penjualan.</td></tr>";
+        return;
+    }
+
+    // ==== 1. GROUPING BERDASARKAN Tanggal + Jam (detik yang sama) ====
+    const groups = {};
+
+    data.forEach(r => {
+        const key = r[0] + " " + r[1]; // Tanggal + Jam
+        if (!groups[key]) {
+            groups[key] = {
+                tanggal: r[0],
+                jam: r[1],
+                totalOmset: 0,
+                totalQty: 0,
+                details: []
+            };
+        }
+        groups[key].details.push(r);
+        groups[key].totalQty += Number(r[4]);
+        groups[key].totalOmset += Number(r[6]);
+    });
+
+    // ==== 2. RENDER KE TABEL (RINGKASAN PER TRANSAKSI) ====
+    Object.keys(groups).reverse().forEach(k => {
+        const tx = groups[k];
+
+        tb.innerHTML += `
+        <tr style="background:#f5f5f5; font-weight:bold;">
+            <td>${tx.tanggal}</td>
+            <td>${tx.jam}</td>
+            <td colspan="2">Total Item: ${tx.totalQty}</td>
+            <td colspan="2"></td>
+            <td>Rp ${tx.totalOmset.toLocaleString()}</td>
+        </tr>
+        `;
+        
+        // === DETAIL PER PRODUK (expand style sederhana) ===
+        tx.details.forEach(d => {
+            tb.innerHTML += `
+            <tr class="detail-row">
+                <td></td>
+                <td></td>
+                <td>${d[2]}</td>
+                <td>${d[3]}</td>
+                <td>${d[4]}</td>
+                <td>${formatRupiah(d[5])}</td>
+                <td>${formatRupiah(d[6])}</td>
+            </tr>`;
+        });
+
+        // Garis pemisah antar transaksi
+        tb.innerHTML += `<tr><td colspan="7" style="background:#ddd; height:3px"></td></tr>`;
+    });
+}
+
+load();
+</script>
+
+</body>
+</html>

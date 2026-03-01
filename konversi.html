@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Konversi Etalase</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="stylesheet" href="style.css">
+    <script src="core.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Konversi Gudang → Etalase</h1>
+
+    <h2>Pilih Barang Gudang</h2>
+    <select id="kodeGudang" onchange="pilihGudang()"></select>
+
+    <h2>Detail Konversi</h2>
+    <input id="namaGudang" disabled>
+    <select id="kategori">
+        <option value="makanan">Makanan</option>
+        <option value="minuman">Minuman</option>
+    </select>
+    <input id="berat" type="number" placeholder="Berat (gr)">
+    <input id="harga" type="number" placeholder="Harga Jual">
+    <input id="balAmbil" type="number" placeholder="Bal Diambil">
+    <input id="pcsHasil" type="number" placeholder="PCS Hasil Jadi">
+
+    <button onclick="konversi()">Konversi</button>
+
+    <h2>Data Produk Etalase</h2>
+<table id="tabelProduk">
+    <thead>
+        <tr>
+            <th>Kode</th>
+            <th>Nama</th>
+            <th>Kategori</th>
+            <th>Berat</th>
+            <th>Harga</th>
+            <th>Stok</th>
+            <th>Waktu</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+</div>
+
+<script>
+let dataG = [];
+
+async function loadGudang() {
+    dataG = await apiGet("gudang");
+
+    const s = qs("#kodeGudang");
+    s.innerHTML = "";
+
+    dataG.forEach(d => {
+        s.innerHTML += `<option value="${d.kode}">${d.kode} - ${d.nama}</option>`;
+    });
+
+    pilihGudang();
+    loadProduk(); // >>>> Tambahin ini <<<<
+}
+
+async function loadProduk() {
+    const data = await apiGet("produk");
+    const tb = qs("#tabelProduk tbody");
+
+    tb.innerHTML = "";
+
+    data.forEach(p => {
+        tb.innerHTML += createRow([
+            p.kode,
+            p.nama,
+            p.kategori,
+            p.berat,
+            p.harga,
+            p.stok,
+            p.waktu
+        ]);
+    });
+}
+
+function pilihGudang() {
+    const kode = qs("#kodeGudang").value;
+    const d = dataG.find(x => x.kode == kode);
+    if (!d) return;
+    qs("#namaGudang").value = d.nama;
+}
+
+async function konversi() {
+    const res = await apiPost({
+        action: "packing_etalase",
+        kodeGudang: qs("#kodeGudang").value,
+        namaGudang: qs("#namaGudang").value,
+        kategori: qs("#kategori").value,
+        berat: Number(qs("#berat").value),
+        harga: Number(qs("#harga").value),
+        balAmbil: Number(qs("#balAmbil").value),
+        pcsHasil: Number(qs("#pcsHasil").value)
+    });
+
+    if (res.status === "error") {
+        alert(res.message);  // 🔥 spesifik: stok habis, stok kurang, dll
+        return; // input tidak di-reset, biar user bisa perbaiki
+    }
+
+    alert("Konversi berhasil.");
+    
+    // RESET INPUT
+    qs("#kategori").value = "makanan";
+    qs("#berat").value = "";
+    qs("#harga").value = "";
+    qs("#balAmbil").value = "";
+    qs("#pcsHasil").value = "";
+
+    loadGudang(); // refresh stoknya
+    loadProduk();
+}
+
+loadGudang();
+</script>
+
+</body>
+</html>

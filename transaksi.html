@@ -5,17 +5,26 @@
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <script src="core.js"></script>
+    <link rel="stylesheet" href="../assets/style.css">
+    <script src="../assets/core.js"></script>
 </head>
 
 <body>
 
 <div class="container">
-    <button class="btn-back" onclick="location.href='index.html'" style="width: auto;">Kembali</button> 
+    <button class="btn-back" onclick="location.href='../index.html'" style="width: auto;">Kembali</button> 
     <h1>Transaksi Penjualan</h1>
 
     <h2>Pilih Produk</h2>
+
+    <div class="search-box">
+    <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Cari produk, kode, atau harga..."
+        oninput="filterProduk()"
+    >
+</div>
 
     <div id="produkGrid" class="grid"></div>
 
@@ -44,11 +53,11 @@ window.onload = async function() {
     renderProduk();
 };
 
-function renderProduk() {
+function renderProduk(data = produk) {
     const grid = qs("#produkGrid");
     grid.innerHTML = "";
 
-    produk.forEach(p => {
+    data.forEach(p => {
         const habis = Number(p.stok) <= 0;
         grid.innerHTML += `
             <div class="card ${habis ? 'habis' : ''}" id="item-${p.kode}"
@@ -164,6 +173,20 @@ async function kirimTransaksi() {
     updateCart();
     produk = await apiGet("produk");
     renderProduk();
+}
+
+function filterProduk() {
+    const keyword = qs("#searchInput").value.toLowerCase();
+
+    const filtered = produk.filter(p => {
+        return (
+            p.nama.toLowerCase().includes(keyword) ||
+            p.kode.toLowerCase().includes(keyword) ||
+            String(p.harga).includes(keyword)
+        );
+    });
+
+    renderProduk(filtered);
 }
 
 </script>

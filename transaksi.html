@@ -32,13 +32,15 @@
 
 <!-- FOOTER CART -->
 <div id="cartFooter" class="footer-cart">
-    <div style="font-weight:bold">Keranjang</div>
-    <div id="cartList"></div>
+    <div>Keranjang Belanja</div> <div id="cartList"></div> <div style="display:flex; justify-content:space-between; align-items:center; border-top: 2px solid #eee; padding-top: 10px;">
+        <span style="font-weight:bold; color:#666;">Total Pembayaran:</span>
+        <div id="totalPrice">Rp 0</div>
+    </div>
 
-    <div style="display:flex; justify-content:space-between; margin-top:15px;">
-        <div id="totalPrice" style="font-size:1.2em;">Rp 0</div>
-
-        <button onclick="kirimTransaksi()">Kirim</button>
+    <div class="cart-action-row">
+        <button class="btn-kirim" onclick="kirimTransaksi()" style="background:var(--green-main); color:white; border:none;">
+            Konfirmasi & Kirim Pesanan
+        </button>
     </div>
 </div>
 </div>

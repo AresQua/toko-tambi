@@ -65,6 +65,9 @@ async function loadGudang() {
         html += `<option value="${g.kode}">${g.nama} (${g.kode})</option>`;
     });
     sel.innerHTML = html;
+
+    pilihGudang();
+    loadProduk(); // >>>> Tambahin ini <<<<
 }
 
 async function loadProduk() {

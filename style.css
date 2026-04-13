@@ -28,6 +28,10 @@ body {
     padding: 40px 20px;
 }
 
+.isian-transaksi {
+    padding-bottom: 300px !important; /* Jarak aman agar item tidak tertutup footer */
+}
+
 .isian input, .isian select, .isian button {
     width: 98%;
     max-width: 98%; /* Supaya tidak tembus keluar layar HP */
@@ -127,6 +131,7 @@ body {
 .container {
             padding: 40px 20px;
             padding-bottom: 40px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .container-2 {

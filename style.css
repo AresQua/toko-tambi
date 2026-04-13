@@ -2,6 +2,9 @@
    TOKO TAMBI – THEME PROSEKA STYLE
 ===================================== */
 
+* {
+    box-sizing: border-box; /* Sangat penting agar padding tidak merusak lebar elemen */
+}
 
 :root {
     --green-main: #8BC34A;
@@ -23,6 +26,12 @@ body {
 
 .isian {
     padding: 40px 20px;
+}
+
+.isian input, .isian select, .isian button {
+    width: 97%;
+    max-width: 97%; /* Supaya tidak tembus keluar layar HP */
+    margin-bottom: 10px;
 }
 
 /* =====================================
@@ -397,6 +406,8 @@ table {
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    min-width: 600px; /* Memastikan tabel punya ruang dan tidak 'penyet' */
+    font-size: 14px;
 }
 
 th {
@@ -413,4 +424,42 @@ td {
 
 tr:hover td {
     background: #f4ffe5;
+}
+
+.table-container {
+    width: 97%;
+    overflow-x: auto; /* Ini kunci agar bisa digeser kanan-kiri */
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 15px;
+}
+
+/* --- RESPONSIVE UNTUK HP (Media Query) --- */
+@media screen and (max-width: 600px) {
+    .header h1 {
+        font-size: 1.8rem; /* Judul Toko Tambi lebih kecil di HP */
+    }
+
+    .nav-grid {
+        grid-template-columns: repeat(2, 1fr); /* Tetap 2 kolom tapi cardnya mengecil */
+        gap: 10px;
+    }
+
+    .nav-card {
+        padding: 15px 10px;
+        min-height: 100px; /* Ukuran card lebih pas */
+    }
+
+    .nav-card h3 {
+        font-size: 14px; /* Font menu tidak kegedean lagi */
+    }
+
+    .container, .container-2 {
+        padding: 15px;
+    }
+    
+    h2 {
+        font-size: 1.2rem;
+    }
 }

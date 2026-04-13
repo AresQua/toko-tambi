@@ -48,7 +48,7 @@
     </thead>
     <tbody></tbody>
     </table>
-    </div>
+</div>
 </div>
 
 <script>
@@ -56,16 +56,15 @@ let dataG = [];
 
 async function loadGudang() {
     dataG = await apiGet("gudang");
-
-    const s = qs("#kodeGudang");
-    s.innerHTML = "";
-
-    dataG.forEach(d => {
-        s.innerHTML += `<option value="${d.kode}">${d.kode} - ${d.nama}</option>`;
+    const sel = qs("#kodeGudang");
+    
+    // Tambahkan opsi default "Pilih Barang"
+    let html = '<option value="" disabled selected>-- Pilih Barang --</option>';
+    
+    dataG.forEach(g => {
+        html += `<option value="${g.kode}">${g.nama} (${g.kode})</option>`;
     });
-
-    pilihGudang();
-    loadProduk(); // >>>> Tambahin ini <<<<
+    sel.innerHTML = html;
 }
 
 async function loadProduk() {

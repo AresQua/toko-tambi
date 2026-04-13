@@ -11,11 +11,13 @@
 
 <body>
 
-<div class="container">
+<div class="container-2">
     <button class="btn-back" onclick="location.href='index.html'" style="width: auto;">Kembali</button> 
     <h1>Transaksi Penjualan</h1>
+</div>
 
-    <h2>Pilih Produk</h2>
+<div class="isian">
+<h2>Pilih Produk</h2>
 
     <div class="search-box">
     <input 
@@ -24,11 +26,9 @@
         placeholder="Cari produk, kode, atau harga..."
         oninput="filterProduk()"
     >
-</div>
+    </div>
 
-    <div id="produkGrid" class="grid"></div>
-
-</div>
+<div id="produkGrid" class="grid"></div>
 
 <!-- FOOTER CART -->
 <div id="cartFooter" class="footer-cart">
@@ -40,6 +40,7 @@
 
         <button onclick="kirimTransaksi()">Kirim</button>
     </div>
+</div>
 </div>
 
 <script>

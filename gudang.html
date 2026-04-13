@@ -58,15 +58,15 @@ window.onload = function() {
 async function loadGudang() {
     try {
         const data = await apiGet("gudang");
-        
-        // Isi dropdown retur
-        const select = qs("#returKode");
-        if(select) {
-            select.innerHTML = "";
-            data.forEach(d => {
-                select.innerHTML += `<option value="${d.kode}">${d.kode} - ${d.nama}</option>`;
-            });
-        }
+    const sel = qs("#returKode");
+    
+    let html = '<option value="" disabled selected>-- Pilih Barang untuk Retur --</option>';
+    
+    data.forEach(g => {
+        html += `<option value="${g.kode}">${g.nama}</option>`;
+    });
+    sel.innerHTML = html;
+
 
         // Tampilkan ke tabel
         const tb = qs("#tabelGudang tbody");

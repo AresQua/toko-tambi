@@ -127,13 +127,11 @@ body {
 .container {
             padding: 40px 20px;
             padding-bottom: 40px; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .container-2 {
             padding: 40px 20px;
             padding-bottom: 40px; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             background-color:#8BC34A;
         }
 

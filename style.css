@@ -127,6 +127,7 @@ body {
 .container {
             padding: 40px 20px;
             padding-bottom: 40px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .container-2 {
@@ -143,7 +144,6 @@ body {
         .container h2 {
             font-size: 2em;
             letter-spacing: 1px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
             color: #8BC34A;
         }
 
@@ -388,10 +388,88 @@ input:focus, select:focus {
     transform: translateY(110%);
     transition: 0.45s ease;
     box-shadow: 0 -8px 25px rgba(0,0,0,0.25);
+    max-height: 50vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .footer-cart.visible {
     transform: translateY(0);
+}
+
+/* Tulisan "Keranjang" agar lebih beda */
+.footer-cart > div:first-child {
+    font-size: 1.2rem;
+    font-weight: 900 !important;
+    color: var(--green-dark);
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--green-light);
+    padding-bottom: 5px;
+}
+
+#cartList {
+    max-height: 220px; 
+    overflow-y: auto; /* Bisa di-scroll atas bawah */
+    margin-bottom: 15px;
+    padding-right: 5px;
+}
+
+/* Informasi Item (Nama & Harga) */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+.cart-item div:first-child {
+    font-size: 15px; /* Font item diperbesar sedikit */
+    font-weight: 600;
+}
+
+/* Tombol + dan - agar tidak terlalu lebar */
+.qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 100px;
+    justify-content: flex-end;
+}
+
+.qty-btn {
+    width: 30px !important; /* Ukuran tombol kotak mungil */
+    height: 30px !important;
+    padding: 0 !important;
+    line-height: 30px;
+    border-radius: 8px !important;
+    background: var(--green-main);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Bagian Total Harga */
+#totalPrice {
+    font-size: 1.4rem !important; /* Lebih besar */
+    font-weight: 900 !important;
+    color: #e67e22; /* Warna orange agar mencolok dibanding hijau */
+    white-space: nowrap; /* Mencegah Rp dan angka terpisah */
+}
+
+/* Baris khusus tombol kirim di bawah */
+.cart-action-row {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.btn-kirim {
+    width: 100% !important;
+    padding: 15px !important;
+    font-size: 1.1rem !important;
+    font-weight: bold;
+    border-radius: 12px;
 }
 
 /* =====================================

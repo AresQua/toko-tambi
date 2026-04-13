@@ -29,8 +29,8 @@ body {
 }
 
 .isian input, .isian select, .isian button {
-    width: 97%;
-    max-width: 97%; /* Supaya tidak tembus keluar layar HP */
+    width: 98%;
+    max-width: 98%; /* Supaya tidak tembus keluar layar HP */
     margin-bottom: 10px;
 }
 
@@ -452,7 +452,7 @@ tr:hover td {
     }
 
     .nav-card h3 {
-        font-size: 14px; /* Font menu tidak kegedean lagi */
+        font-size: 1.8rem; /* Font menu tidak kegedean lagi */
     }
 
     .container, .container-2 {

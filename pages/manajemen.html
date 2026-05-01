@@ -226,6 +226,11 @@
             return;
         }
 
+        showToast("Berhasil ditambahkan!");
+        qs("#balNama").value = "";
+        qs("#balJml").value = "";
+        qs("#balIsi").value = "";
+
         const res = await apiPost({
             action: "tambah_gudang",
             items: [{
@@ -237,10 +242,6 @@
         });
 
         if (res.status === "success") {
-            alert("Berhasil ditambahkan");
-            qs("#balNama").value = "";
-            qs("#balJml").value = "";
-            qs("#balIsi").value = "";
             loadGudangBal(); // refresh data
         } else {
             alert("Gagal: " + res.message);
@@ -341,6 +342,13 @@
             return;
         }
 
+        showToast("Berhasil ditambahkan!");
+        qs("#searchGudang").value = "";
+        qs("#balBerat").value = "";
+        qs("#balHarga").value = "";
+        qs("#balAmbil").value = "";
+        qs("#balHasil").value = "";
+
         const res = await apiPost({
             action: "packing_etalase",
             kodeGudang: selectedGudang.kode,
@@ -353,12 +361,6 @@
         });
 
         if (res.status === "success") {
-            alert("Konversi berhasil");
-            qs("#searchGudang").value = "";
-            qs("#balBerat").value = "";
-            qs("#balHarga").value = "";
-            qs("#balAmbil").value = "";
-            qs("#balHasil").value = "";
             loadGudangSelect(); // refresh gudang
             loadProdukBal();    // refresh produk
         } else {
@@ -401,6 +403,11 @@
             return;
         }
 
+        showToast("Berhasil ditambahkan!");
+        qs("#packNama").value = "";
+        qs("#packQty").value = "";
+        qs("#packHarga").value = "";
+
         const res = await apiPost({
             action: "tambah_pack",
             nama: nama,
@@ -409,10 +416,6 @@
         });
 
         if (res.status === "success") {
-            alert("Produk berhasil ditambahkan");
-            qs("#packNama").value = "";
-            qs("#packQty").value = "";
-            qs("#packHarga").value = "";
             loadProdukPack();
         } else {
             alert(res.message);
@@ -468,6 +471,8 @@
             return;
         }
 
+        showToast("Berhasil ditambahkan!");
+
         const res = await apiPost({
             action: "tambah_minuman",
             nama: nama,
@@ -478,10 +483,7 @@
         });
 
         if (res.status === "success") {
-            alert("Minuman berhasil ditambahkan");
-
             resetMinumanForm();
-
             loadMinuman();
         } else {
             alert(res.message);
@@ -512,6 +514,24 @@
                 <td>${d.waktu}</td>
             </tr>`;
         });
+    }
+
+    function showToast(msg) {
+        const t = document.createElement("div");
+        t.innerText = msg;
+        t.style.position = "fixed";
+        t.style.bottom = "50%";
+        t.style.left = "50%";
+        t.style.transform = "translateX(-50%)";
+        t.style.background = "#333";
+        t.style.color = "#fff";
+        t.style.padding = "12px 20px";
+        t.style.borderRadius = "10px";
+        t.style.zIndex = "9999";
+
+        document.body.appendChild(t);
+
+        setTimeout(() => t.remove(), 2000);
     }
 </script>
 </body>

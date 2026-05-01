@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Penjualan</title>
+    <title>Manajemen & Konversi - Toko Tambi</title>
     <link rel="icon" type="image/png" href="../icon.png">
     <link rel="apple-touch-icon" href="../icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,119 +11,528 @@
 <body>
 
 <div class="container-2">
-    <button class="btn-back" onclick="location.href='../index.html'" style="width: auto;">Kembali</button> 
-    <h1>Laporan Penjualan</h1>
+    <button class="btn-back" onclick="location.href='../index.html'">Kembali</button>
+    <h1>Manajemen Produk</h1>
 </div>
 
 <div class="isian">
     <div class="switch-container">
-        <div id="lapMakanan" class="switch-btn active" onclick="switchLaporan('makanan')">Makanan</div>
-        <div id="lapMinuman" class="switch-btn" onclick="switchLaporan('minuman')">Minuman</div>
+        <div id="tabBal" class="switch-btn active" onclick="switchTab('bal')">Makanan Bal</div>
+        <div id="tabPack" class="switch-btn" onclick="switchTab('pack')">Makanan Pack</div>
+        <div id="tabMinum" class="switch-btn" onclick="switchTab('minum')">Minuman</div>
     </div>
-    <div class="table-container">
-        <table id="tabelJual">
+
+    <div id="secBal" class="section">
+        <div class="switch-container" style="background: #e0e0e0;">
+            <div id="subGudang" class="switch-btn active" onclick="switchBalMode('gudang')">Input Gudang</div>
+            <div id="subEtalase" class="switch-btn" onclick="switchBalMode('etalase')">Konversi Etalase</div>
+        </div>
+
+        <div id="inputGudangBal">
+            <h3>Nama Barang</h3>
+            <input id="balNama" placeholder="Nama Barang">
+            <h3>Jumlah Bal</h3>
+            <input id="balJml" type="number" placeholder="Jumlah Bal">
+            <h3>Isi per Bal</h3>
+            <input id="balIsi" type="number" placeholder="Isi per Bal (Kg)">
+            <button onclick="simpanGudangBal()">Tambah ke Gudang</button>
+            
+            <div class="table-container">
+            <table id="tabelGudangBal">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama</th>
+                        <th>Bal</th>
+                        <th>Isi</th>
+                        <th>Satuan</th>
+                        <th>Waktu</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            </div>
+
+        </div>
+
+        <div id="inputEtalaseBal" style="display:none;">
+            <div class="search-container">
+                <h3>Cari Barang</h3>
+                <input id="searchGudang" placeholder="Cari produk gudang..." oninput="searchGudangLive()">
+            </div>
+            <div id="searchResult" class="search-result"></div>
+            <h3>Berat</h3>
+            <input id="balBerat" type="number" placeholder="Berat per Pack (gr)">
+            <h3>Harga</h3>
+            <input id="balHarga" type="number" placeholder="Harga Jual">
+            <h3>Bal Diambil</h3>
+            <input id="balAmbil" type="number" placeholder="Bal yang Diambil">
+            <h3>Pack Dihasilkan</h3>
+            <input id="balHasil" type="number" placeholder="Total Pack Dihasilkan">
+            <button onclick="konversiBal()">Proses Konversi</button>
+
+            <div class="table-container">
+            <table id="tabelProdukBal">
+            <thead>
+                <tr>
+                    <th>Kode</th>
+                    <th>Nama</th>
+                    <th>Kategori</th>
+                    <th>Berat</th>
+                    <th>Harga</th>
+                    <th>Stok</th>
+                    <th>Waktu</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="secPack" class="section" style="display:none;">
+        <h3>Nama Barang</h3>
+        <input id="packNama" placeholder="Nama Barang">
+        <h3>Jumlah</h3>
+        <input id="packQty" type="number" inputmode="numeric" placeholder="Jumlah Pcs">
+        <h3>Harga</h3>
+        <input id="packHarga" type="number" inputmode="numeric" placeholder="Harga">
+        <button onclick="simpanPack()">Simpan ke Etalase</button>
+
+        <div class="table-container">
+        <table id="tabelProdukPack">
         <thead>
             <tr>
-                <th>Tanggal</th>
-                <th>Jam</th>
-                <th>Nama Produk</th>
                 <th>Kode</th>
-                <th>Jumlah</th>
+                <th>Nama</th>
+                <th>Kategori</th>
                 <th>Harga</th>
-                <th>Total</th>
+                <th>Stok</th>
+                <th>Waktu</th>
             </tr>
         </thead>
         <tbody></tbody>
-    </table>
+        </table>
+        </div>
+
+    </div>
+
+    <div id="secMinum" class="section" style="display:none;">
+        <h3>Varian</h3>
+        <div class="option-group" id="optVarian">
+            <div class="option-item" onclick="setOpt('Varian', 'Teh', this)">Teh</div>
+            <div class="option-item" onclick="setOpt('Varian', 'Smoothies', this)">Smoothies</div>
+            <div class="option-item" onclick="setOpt('Varian', 'Jus', this)">Jus</div>
+            <div class="option-item" onclick="setOpt('Varian', 'Hot', this)">Hot</div>
+        </div>
+        
+        <h3>Topping</h3>
+        <div class="option-group" id="optTopping">
+            <div class="option-item" onclick="setOpt('Topping', 'Susu', this)">Susu</div>
+            <div class="option-item" onclick="setOpt('Topping', 'Boba', this)">Boba</div>
+            <div class="option-item" onclick="setOpt('Topping', 'Cookies', this)">Cookies</div>
+            <div class="option-item" onclick="setOpt('Topping', 'Default', this)">Default</div>
+        </div>
+
+        <h3>Nama Produk</h3>
+        <input id="minumNama" placeholder="Nama Produk">
+
+        <h3>Ukuran</h3>
+        <div class="option-group" id="optUkuran">
+            <div class="option-item" onclick="setOpt('Ukuran', 'Besar', this)">Besar</div>
+            <div class="option-item" onclick="setOpt('Ukuran', 'Kecil', this)">Kecil</div>
+            <div class="option-item" onclick="setOpt('Ukuran', 'Default', this)">Default</div>
+        </div>
+
+        <h3>Harga</h3>
+        <input id="minumHarga" type="number" inputmode="numeric" placeholder="Harga">
+        <button onclick="simpanMinuman()">Simpan Minuman</button>
+
+        <div class="table-container">
+        <table id="tabelMinum">
+        <thead>
+            <tr>
+                <th>Kode</th>
+                <th>Kategori</th>
+                <th>Varian</th>
+                <th>Nama</th>
+                <th>Topping</th>
+                <th>Ukuran</th>
+                <th>Harga</th>
+                <th>Waktu</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        </table>
+        </div>
+
     </div>
 </div>
 
 <script>
+    // State untuk pilihan opsi
+    let gudangFull = [];
 
-let laporanAktif = "makanan";
+    let minData = {};
 
-async function load() {
-    let data;
-
-    if (laporanAktif === "makanan") {
-        data = await apiGet("penjualan");
-    } else {
-        data = await apiGet("penjualan_minuman");
+    function setOpt(key, val, el) {
+        const parent = el.parentElement;
+        parent.querySelectorAll('.option-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        minData[key] = val;
     }
 
-    renderLaporan(data);
-}
-
-function renderLaporan(data) {
-    const tb = qs("#tabelJual tbody");
-    tb.innerHTML = "";
-
-    if (!data || data.length === 0) {
-        tb.innerHTML = "<tr><td colspan='7' style='text-align:center;color:#888'>Belum ada data penjualan.</td></tr>";
-        return;
+    function switchTab(type) {
+        qsa('.section').forEach(s => s.style.display = 'none');
+        qsa('.switch-btn').forEach(b => b.classList.remove('active'));
+        
+        if(type === 'bal') {
+            qs('#secBal').style.display = 'block';
+            qs('#tabBal').classList.add('active');
+            switchBalMode('gudang');
+        } else if(type === 'pack') {
+            qs('#secPack').style.display = 'block';
+            qs('#tabPack').classList.add('active');
+            loadProdukPack();
+        } else {
+            qs('#secMinum').style.display = 'block';
+            qs('#tabMinum').classList.add('active');
+            loadMinuman();
+        }
     }
 
-    const groups = {};
+    function switchBalMode(mode) {
+        qs('#subGudang').classList.toggle('active', mode === 'gudang');
+        qs('#subEtalase').classList.toggle('active', mode === 'etalase');
+        qs('#inputGudangBal').style.display = mode === 'gudang' ? 'block' : 'none';
+        if (mode === 'gudang') {
+            loadGudangBal();
+        }
+        qs('#inputEtalaseBal').style.display = mode === 'etalase' ? 'block' : 'none';
+        if (mode === 'etalase') {
+            loadGudangSelect();
+            loadProdukBal();
+        }
+    }
 
-    data.forEach(r => {
-        const key = r[0] + " " + r[1];
+    async function simpanGudangBal() {
+        const nama = qs("#balNama").value;
+        const bal = Number(qs("#balJml").value);
+        const isi = Number(qs("#balIsi").value);
 
-        if (!groups[key]) {
-            groups[key] = {
-                tanggal: r[0],
-                jam: r[1],
-                totalOmset: 0,
-                totalQty: 0,
-                details: []
-            };
+        if (!nama || !bal || !isi) {
+            alert("Isi semua data dulu");
+            return;
         }
 
-        groups[key].details.push(r);
-        groups[key].totalQty += Number(r[4]);
-        groups[key].totalOmset += Number(r[6]);
-    });
+        showToast("Berhasil ditambahkan!");
+        qs("#balNama").value = "";
+        qs("#balJml").value = "";
+        qs("#balIsi").value = "";
 
-    Object.keys(groups).reverse().forEach(k => {
-        const tx = groups[k];
-
-        tb.innerHTML += `
-        <tr style="background:#f5f5f5; font-weight:bold;">
-            <td>${tx.tanggal}</td>
-            <td>${tx.jam}</td>
-            <td colspan="2">Total Item: ${tx.totalQty}</td>
-            <td colspan="2"></td>
-            <td>Rp ${tx.totalOmset.toLocaleString()}</td>
-        </tr>
-        `;
-
-        tx.details.forEach(d => {
-            tb.innerHTML += `
-            <tr class="detail-row">
-                <td></td>
-                <td></td>
-                <td>${d[2]}</td>
-                <td>${d[3]}</td>
-                <td>${d[4]}</td>
-                <td>${formatRupiah(d[5])}</td>
-                <td>${formatRupiah(d[6])}</td>
-            </tr>`;
+        const res = await apiPost({
+            action: "tambah_gudang",
+            items: [{
+                nama: nama,
+                bal: bal,
+                isi: isi,
+                satuan: "kg"
+            }]
         });
 
-        tb.innerHTML += `<tr><td colspan="7" style="background:#ddd; height:3px"></td></tr>`;
-    });
-}
+        if (res.status === "success") {
+            loadGudangBal(); // refresh data
+        } else {
+            alert("Gagal: " + res.message);
+        }
+    }
 
-function switchLaporan(kat) {
-    laporanAktif = kat;
+    async function loadGudangBal() {
+        const data = await apiGet("gudang");
 
-    qs("#lapMakanan").classList.toggle("active", kat === "makanan");
-    qs("#lapMinuman").classList.toggle("active", kat === "minuman");
+        renderGudangBal(data);
+    }
 
-    load();
-}
+    function renderGudangBal(data) {
+        const tb = qs("#tabelGudangBal tbody");
 
-load();
+        tb.innerHTML = "";
+
+        data.forEach(d => {
+            tb.innerHTML += `
+            <tr>
+                <td>${d.kode}</td>
+                <td>${d.nama}</td>
+                <td>${d.bal}</td>
+                <td>${d.isi}</td>
+                <td>${d.satuan}</td>
+                <td>${d.waktu}</td>
+            </tr>`;
+        });
+    }
+
+    window.onload = function() {
+        loadGudangBal();
+    }
+
+    async function loadGudangSelect() {
+        const data = await apiGet("gudang");
+
+        gudangFull = data; // simpan buat filter nanti
+
+        renderSelectGudang(data);
+    }
+
+    function searchGudangLive() {
+        const keyword = qs("#searchGudang").value.toLowerCase();
+        const container = qs("#searchResult");
+
+        if (!keyword) {
+            container.innerHTML = "";
+            return;
+        }
+
+        const filtered = gudangFull.filter(item =>
+            item.nama.toLowerCase().includes(keyword) ||
+            item.kode.toLowerCase().includes(keyword)
+        );
+
+        let html = "";
+
+        filtered.slice(0, 10).forEach(item => {
+            html += `
+            <div class="search-item" onclick="pilihGudang('${item.kode}')">
+                <b>${item.nama}</b><br>
+                <small>${item.kode} | Stok: ${item.bal}</small>
+            </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function pilihGudang(kode) {
+        const item = gudangFull.find(g => g.kode === kode);
+
+        if (!item) return;
+
+        window.selectedGudang = item;
+
+        // isi input biar user tahu yang dipilih
+        qs("#searchGudang").value = item.nama;
+
+        // kosongkan hasil
+        qs("#searchResult").innerHTML = "";
+    }
+
+    async function konversiBal() {
+        if (!window.selectedGudang) {
+            alert("Pilih barang dulu");
+            return;
+        }
+
+        const berat = Number(qs("#balBerat").value);
+        const harga = Number(qs("#balHarga").value);
+        const balAmbil = Number(qs("#balAmbil").value);
+        const pcsHasil = Number(qs("#balHasil").value);
+
+        if (!berat || !harga || !balAmbil || !pcsHasil) {
+            alert("Lengkapi semua data");
+            return;
+        }
+
+        showToast("Berhasil ditambahkan!");
+        qs("#searchGudang").value = "";
+        qs("#balBerat").value = "";
+        qs("#balHarga").value = "";
+        qs("#balAmbil").value = "";
+        qs("#balHasil").value = "";
+
+        const res = await apiPost({
+            action: "packing_etalase",
+            kodeGudang: selectedGudang.kode,
+            namaGudang: selectedGudang.nama,
+            kategori: "makanan",
+            berat: berat,
+            harga: harga,
+            balAmbil: balAmbil,
+            pcsHasil: pcsHasil
+        });
+
+        if (res.status === "success") {
+            loadGudangSelect(); // refresh gudang
+            loadProdukBal();    // refresh produk
+        } else {
+            alert(res.message);
+        }
+    }
+
+    async function loadProdukBal() {
+        const data = await apiGet("produk");
+
+        renderProdukBal(data);
+    }
+
+    function renderProdukBal(data) {
+        const tb = qs("#tabelProdukBal tbody");
+
+        tb.innerHTML = "";
+
+        data.forEach(d => {
+            tb.innerHTML += `
+            <tr>
+                <td>${d.kode}</td>
+                <td>${d.nama}</td>
+                <td>${d.kategori}</td>
+                <td>${d.berat}</td>
+                <td>${d.harga}</td>
+                <td>${d.stok}</td>
+                <td>${d.waktu}</td>
+            </tr>`;
+        });
+    }
+
+    async function simpanPack() {
+        const nama = qs("#packNama").value.trim();
+        const qty = Number(qs("#packQty").value);
+        const harga = Number(qs("#packHarga").value);
+
+        if (!nama || !qty || !harga) {
+            alert("Lengkapi semua data");
+            return;
+        }
+
+        showToast("Berhasil ditambahkan!");
+        qs("#packNama").value = "";
+        qs("#packQty").value = "";
+        qs("#packHarga").value = "";
+
+        const res = await apiPost({
+            action: "tambah_pack",
+            nama: nama,
+            qty: qty,
+            harga: harga
+        });
+
+        if (res.status === "success") {
+            loadProdukPack();
+        } else {
+            alert(res.message);
+        }
+    }
+
+    async function loadProdukPack() {
+        const data = await apiGet("produk");
+
+        // filter hanya makanan pack (opsional)
+        const filtered = data.filter(d => d.kategori === "makanan");
+
+        renderProdukPack(filtered);
+    }
+
+    function renderProdukPack(data) {
+        const tb = qs("#tabelProdukPack tbody");
+
+        tb.innerHTML = "";
+
+        data.forEach(d => {
+            tb.innerHTML += `
+            <tr>
+                <td>${d.kode}</td>
+                <td>${d.nama}</td>
+                <td>${d.kategori}</td>
+                <td>${d.harga}</td>
+                <td>${d.stok}</td>
+                <td>${d.waktu}</td>
+            </tr>`;
+        });
+    }
+
+    function resetMinumanForm() {
+        // reset state
+        minData = {};
+
+        // hapus semua active
+        document.querySelectorAll("#secMinum .option-item")
+            .forEach(el => el.classList.remove("active"));
+
+        // reset input
+        qs("#minumNama").value = "";
+        qs("#minumHarga").value = "";
+    }
+
+    async function simpanMinuman() {
+        const nama = qs("#minumNama").value.trim();
+        const harga = Number(qs("#minumHarga").value);
+
+        if (!nama || !harga || !minData.Varian || !minData.Topping || !minData.Ukuran) {
+            alert("Lengkapi data");
+            return;
+        }
+
+        showToast("Berhasil ditambahkan!");
+
+        const res = await apiPost({
+            action: "tambah_minuman",
+            nama: nama,
+            harga: harga,
+            varian: minData.Varian,
+            topping: minData.Topping,
+            ukuran: minData.Ukuran
+        });
+
+        if (res.status === "success") {
+            resetMinumanForm();
+            loadMinuman();
+        } else {
+            alert(res.message);
+        }
+    }
+
+    async function loadMinuman() {
+        const data = await apiGet("minuman");
+
+        renderMinuman(data);
+    }
+
+    function renderMinuman(data) {
+        const tb = qs("#tabelMinum tbody");
+
+        tb.innerHTML = "";
+
+        data.forEach(d => {
+            tb.innerHTML += `
+            <tr>
+                <td>${d.kode}</td>
+                <td>${d.kategori}</td>
+                <td>${d.varian}</td>
+                <td>${d.nama}</td>
+                <td>${d.topping}</td>
+                <td>${d.ukuran}</td>
+                <td>${d.harga}</td>
+                <td>${d.waktu}</td>
+            </tr>`;
+        });
+    }
+
+    function showToast(msg) {
+        const t = document.createElement("div");
+        t.innerText = msg;
+        t.style.position = "fixed";
+        t.style.bottom = "20px";
+        t.style.left = "50%";
+        t.style.transform = "translateX(-50%)";
+        t.style.background = "#333";
+        t.style.color = "#fff";
+        t.style.padding = "12px 20px";
+        t.style.borderRadius = "10px";
+        t.style.zIndex = "9999";
+
+        document.body.appendChild(t);
+
+        setTimeout(() => t.remove(), 2000);
+    }
 </script>
-
 </body>
 </html>

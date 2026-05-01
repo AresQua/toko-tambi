@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transaksi Penjualan</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/style.css">
+    <script src="../assets/core.js"></script>
+</head>
+
+<body>
+
+<div class="container-2">
+    <button class="btn-back" onclick="location.href='../index.html'" style="width: auto;">Kembali</button> 
+    <h1>Transaksi Penjualan</h1>
+</div>
+
+<div class="isian isian-transaksi">
+<h2>Pilih Produk</h2>
+
+    <div class="switch-container">
+        <div id="tabMakanan" class="switch-btn active" onclick="switchKategori('makanan')">Makanan</div>
+        <div id="tabMinuman" class="switch-btn" onclick="switchKategori('minuman')">Minuman</div>
+    </div>
+
+    <div class="search-box">
+    <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Cari produk, kode, atau harga..."
+        oninput="filterProduk()"
+    >
+    </div>
+
+<div id="produkGrid" class="grid"></div>
+
+<!-- FOOTER CART -->
+<div id="cartFooter" class="footer-cart">
+    <div>Keranjang Belanja</div> <div id="cartList"></div> <div style="display:flex; justify-content:space-between; align-items:center; border-top: 2px solid #eee; padding-top: 10px;">
+        <span style="font-weight:bold; color:#666;">Total Pembayaran:</span>
+        <div id="totalPrice">Rp 0</div>
+    </div>
+
+    <div class="cart-action-row">
+        <button class="btn-kirim" onclick="kirimTransaksi()" style="background:var(--green-main); color:white; border:none;">
+            Konfirmasi & Kirim Pesanan
+        </button>
+    </div>
+</div>
+</div>
+
+<script>
+
+let kategoriAktif = "makanan";
+let produk = [];
+let cart = {};
+
+/* LOAD PRODUK */
+window.onload = async function() {
+    await loadProdukByKategori();
+};
+
+async function loadProdukByKategori() {
+    if (kategoriAktif === "makanan") {
+        produk = await apiGet("produk");
+    } else {
+        produk = await apiGet("minuman");
+    }
+
+    renderProduk();
+}
+
+function switchKategori(kat) {
+    kategoriAktif = kat;
+
+    // update UI tombol
+    qs("#tabMakanan").classList.toggle("active", kat === "makanan");
+    qs("#tabMinuman").classList.toggle("active", kat === "minuman");
+
+    // reset search
+    qs("#searchInput").value = "";
+
+    // reset cart (biar nggak campur kategori)
+    cart = {};
+    updateCart();
+
+    // reload data
+    loadProdukByKategori();
+}
+
+function renderProduk(data = produk) {
+    const grid = qs("#produkGrid");
+    grid.innerHTML = "";
+
+    data.forEach(p => {
+
+        let stok = p.stok ?? 999; // minuman dianggap selalu ada
+        const habis = kategoriAktif === "makanan" && Number(stok) <= 0;
+
+        grid.innerHTML += `
+            <div class="card ${habis ? 'habis' : ''}" id="item-${p.kode}"
+                 onclick="pilihProduk('${p.kode}', ${p.harga}, ${stok}, '${p.nama}')">
+                 
+                <b>
+                ${kategoriAktif === "minuman"
+                    ? formatNamaMinuman(p)
+                    : p.nama
+                }
+                </b><br>
+                <small>${formatRupiah(p.harga)}</small>
+
+                ${kategoriAktif === "makanan" ? `
+                    <div class="stok-label">Stok: ${stok}</div>
+                ` : ""}
+
+                ${habis ? "<small style='color:red'>Habis</small>" : ""}
+            </div>
+        `;
+    });
+}
+
+function formatNamaMinuman(p) {
+    let teks = `${p.varian || ""} ${p.nama || ""}`;
+
+    if (p.topping && p.topping !== "Default") {
+        teks += ` ${p.topping}`;
+    }
+
+    if (p.ukuran && p.ukuran !== "Default") {
+        teks += ` ${p.ukuran}`;
+    }
+
+    return teks.trim();
+}
+
+/* PILIH / BATAL PILIH PRODUK */
+function pilihProduk(kode, harga, stok, nama) {
+
+    if (stok <= 0) {
+        alert("Stok habis!");
+        return;
+    }
+
+    if (cart[kode]) {
+        delete cart[kode];
+        qs("#item-" + kode).classList.remove("selected");
+    } else {
+        cart[kode] = {
+            nama: nama,
+            harga: harga,
+            jumlah: 1,
+            stok: stok
+        };
+        qs("#item-" + kode).classList.add("selected");
+    }
+
+    updateCart();
+}
+
+/* UPDATE UI KERANJANG */
+function updateCart() {
+    const keys = Object.keys(cart);
+    const footer = qs("#cartFooter");
+
+    if (keys.length === 0) {
+        footer.classList.remove("visible");
+        qs("#cartList").innerHTML = "";
+        qs("#totalPrice").innerHTML = "Rp 0";
+        return;
+    }
+
+    footer.classList.add("visible");
+
+    let html = "";
+    let total = 0;
+
+    keys.forEach(k => {
+        const item = cart[k];
+        const subtotal = item.harga * item.jumlah;
+        total += subtotal;
+
+        html += `
+        <div class="cart-item">
+            <div>
+                <b>${item.nama}</b><br>
+                <small>${formatRupiah(item.harga)} x ${item.jumlah}</small>
+            </div>
+
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="qty-btn" onclick="ubahQty('${k}', -1)">-</button>
+                <b>${item.jumlah}</b>
+                <button class="qty-btn" onclick="ubahQty('${k}', 1)">+</button>
+            </div>
+        </div>`;
+    });
+
+    qs("#cartList").innerHTML = html;
+    qs("#totalPrice").innerHTML = formatRupiah(total);
+}
+
+/* CEGAH JUMLAH > STOK */
+function ubahQty(kode, delta) {
+    cart[kode].jumlah += delta;
+
+    if (cart[kode].jumlah < 1) {
+        delete cart[kode];
+        qs("#item-" + kode).classList.remove("selected");
+    } else if (cart[kode].jumlah > cart[kode].stok) {
+        cart[kode].jumlah = cart[kode].stok;
+        alert("Jumlah melebihi stok!");
+    }
+
+    updateCart();
+}
+
+/* KIRIM KE BACKEND */
+
+async function kirimTransaksi() {
+    const items = Object.keys(cart).map(k => ({
+        kode: k,
+        nama: cart[k].nama,
+        harga: cart[k].harga,
+        jumlah: cart[k].jumlah
+    }));
+
+    await apiPost({
+        action: "jual_batch",
+        items: items.map(i => ({
+            ...i,
+            kategori: kategoriAktif // ini penting
+        }))
+    });
+
+    alert("Transaksi berhasil tersimpan!");
+
+    cart = {};
+    updateCart();
+    await loadProdukByKategori();
+    renderProduk();
+}
+
+function filterProduk() {
+    const keyword = qs("#searchInput").value.toLowerCase();
+
+    const filtered = produk.filter(p => {
+        return (
+            p.nama.toLowerCase().includes(keyword) ||
+            p.kode.toLowerCase().includes(keyword) ||
+            String(p.harga).includes(keyword)
+        );
+    });
+
+    renderProduk(filtered);
+}
+
+</script>
+
+</body>
+</html>

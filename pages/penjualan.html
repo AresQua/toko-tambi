@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laporan Penjualan</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/style.css">
+    <script src="../assets/core.js"></script>
+</head>
+<body>
+
+<div class="container-2">
+    <button class="btn-back" onclick="location.href='../index.html'" style="width: auto;">Kembali</button> 
+    <h1>Laporan Penjualan</h1>
+</div>
+
+<div class="isian">
+    <div class="switch-container">
+        <div id="lapMakanan" class="switch-btn active" onclick="switchLaporan('makanan')">Makanan</div>
+        <div id="lapMinuman" class="switch-btn" onclick="switchLaporan('minuman')">Minuman</div>
+    </div>
+    <div class="table-container">
+        <table id="tabelJual">
+        <thead>
+            <tr>
+                <th>Tanggal</th>
+                <th>Jam</th>
+                <th>Nama Produk</th>
+                <th>Kode</th>
+                <th>Jumlah</th>
+                <th>Harga</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    </div>
+</div>
+
+<script>
+
+let laporanAktif = "makanan";
+
+async function load() {
+    let data;
+
+    if (laporanAktif === "makanan") {
+        data = await apiGet("penjualan");
+    } else {
+        data = await apiGet("penjualan_minuman");
+    }
+
+    renderLaporan(data);
+}
+
+function renderLaporan(data) {
+    const tb = qs("#tabelJual tbody");
+    tb.innerHTML = "";
+
+    if (!data || data.length === 0) {
+        tb.innerHTML = "<tr><td colspan='7' style='text-align:center;color:#888'>Belum ada data penjualan.</td></tr>";
+        return;
+    }
+
+    const groups = {};
+
+    data.forEach(r => {
+        const key = r[0] + " " + r[1];
+
+        if (!groups[key]) {
+            groups[key] = {
+                tanggal: r[0],
+                jam: r[1],
+                totalOmset: 0,
+                totalQty: 0,
+                details: []
+            };
+        }
+
+        groups[key].details.push(r);
+        groups[key].totalQty += Number(r[4]);
+        groups[key].totalOmset += Number(r[6]);
+    });
+
+    Object.keys(groups).reverse().forEach(k => {
+        const tx = groups[k];
+
+        tb.innerHTML += `
+        <tr style="background:#f5f5f5; font-weight:bold;">
+            <td>${tx.tanggal}</td>
+            <td>${tx.jam}</td>
+            <td colspan="2">Total Item: ${tx.totalQty}</td>
+            <td colspan="2"></td>
+            <td>Rp ${tx.totalOmset.toLocaleString()}</td>
+        </tr>
+        `;
+
+        tx.details.forEach(d => {
+            tb.innerHTML += `
+            <tr class="detail-row">
+                <td></td>
+                <td></td>
+                <td>${d[2]}</td>
+                <td>${d[3]}</td>
+                <td>${d[4]}</td>
+                <td>${formatRupiah(d[5])}</td>
+                <td>${formatRupiah(d[6])}</td>
+            </tr>`;
+        });
+
+        tb.innerHTML += `<tr><td colspan="7" style="background:#ddd; height:3px"></td></tr>`;
+    });
+}
+
+function switchLaporan(kat) {
+    laporanAktif = kat;
+
+    qs("#lapMakanan").classList.toggle("active", kat === "makanan");
+    qs("#lapMinuman").classList.toggle("active", kat === "minuman");
+
+    load();
+}
+
+load();
+</script>
+
+</body>
+</html>

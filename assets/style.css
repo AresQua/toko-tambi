@@ -588,6 +588,36 @@ tr:hover td {
     background: #f4ffe5;
 }
 
+.toast {
+            position: fixed;
+            bottom: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            
+            background: var(--neru-black);
+            color: var(--primary-yellow);
+            
+            padding: 14px 20px;
+            border-radius: 12px;
+            
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+            
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+        
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+   }
+
 /* --- RESPONSIVE UNTUK HP (Media Query) --- */
 @media screen and (max-width: 600px) {
     .header h1 {

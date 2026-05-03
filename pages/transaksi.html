@@ -256,21 +256,18 @@ function filterProduk() {
 
 function showToast(msg) {
     const t = document.createElement("div");
+    t.className = "toast";
     t.innerText = msg;
-    t.style.position = "fixed";
-    t.style.bottom = "50%";
-    t.style.left = "50%";
-    t.style.transform = "translateX(-50%)";
-    t.style.background = "#333";
-    t.style.color = "#fff";
-    t.style.padding = "12px 20px";
-    t.style.borderRadius = "10px";
-    t.style.zIndex = "9999";
 
     document.body.appendChild(t);
 
-    setTimeout(() => t.remove(), 2000);
-}
+    setTimeout(() => t.classList.add("show"), 10);
+
+    setTimeout(() => {
+        t.classList.remove("show");
+        setTimeout(() => t.remove(), 300);
+    }, 2000);
+    }
 
 </script>
 

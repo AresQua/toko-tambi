@@ -594,8 +594,8 @@ tr:hover td {
             left: 50%;
             transform: translateX(-50%) translateY(20px);
             
-            background: var(--neru-black);
-            color: var(--primary-yellow);
+            background: #fff;
+            color: var(--green-main);
             
             padding: 14px 20px;
             border-radius: 12px;

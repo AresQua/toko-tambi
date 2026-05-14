@@ -17,98 +17,57 @@
 
 <div class="isian">
     <div class="switch-container">
-        <div id="tabBal" class="switch-btn active" onclick="switchTab('bal')">Makanan Bal</div>
-        <div id="tabPack" class="switch-btn" onclick="switchTab('pack')">Makanan Pack</div>
+        <div id="tabModal" class="switch-btn active" onclick="switchTab('modal')">Suply</div>
+        <div id="tabMakanan" class="switch-btn" onclick="switchTab('makanan')">Makanan</div>
         <div id="tabMinum" class="switch-btn" onclick="switchTab('minum')">Minuman</div>
     </div>
 
-    <div id="secBal" class="section">
-        <div class="switch-container" style="background: #e0e0e0;">
-            <div id="subGudang" class="switch-btn active" onclick="switchBalMode('gudang')">Input Gudang</div>
-            <div id="subEtalase" class="switch-btn" onclick="switchBalMode('etalase')">Konversi Etalase</div>
-        </div>
+    <div id="secModal" class="section">
+        <h3>Nama Supplier / Produsen</h3>
+        <input id="modalSupplier" placeholder="Nama Supplier">
+        <h3>Keterangan (Opsional)</h3>
+        <input id="modalBarang" placeholder="Keterangan">
+        <h3>Jumlah Barang (Opsional)</h3>
+        <input id="modalJumlah" type="number" placeholder="Jumlah Barang">
+        <h3>Harga Suply</h3>
+        <input id="modalHarga" type="text" inputmode="numeric" placeholder="Total Modal">
+        <button onclick="simpanModal()">Simpan Modal</button>
 
-        <div id="inputGudangBal">
-            <h3>Nama Barang</h3>
-            <input id="balNama" placeholder="Nama Barang">
-            <h3>Jumlah Bal</h3>
-            <input id="balJml" type="number" placeholder="Jumlah Bal">
-            <h3>Isi per Bal</h3>
-            <input id="balIsi" type="number" placeholder="Isi per Bal (Kg)">
-            <button onclick="simpanGudangBal()">Tambah ke Gudang</button>
-            
-            <div class="table-container">
-            <table id="tabelGudangBal">
+        <div class="table-container">
+            <table id="tabelModal">
                 <thead>
                     <tr>
-                        <th>Kode</th>
-                        <th>Nama</th>
-                        <th>Bal</th>
-                        <th>Isi</th>
-                        <th>Satuan</th>
+                        <th>Supplier</th>
+                        <th>Keterangan</th>
+                        <th>Jumlah</th>
+                        <th>Modal</th>
                         <th>Waktu</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            </div>
-
-        </div>
-
-        <div id="inputEtalaseBal" style="display:none;">
-            <div class="search-container">
-                <h3>Cari Barang</h3>
-                <input id="searchGudang" placeholder="Cari produk gudang..." oninput="searchGudangLive()">
-            </div>
-            <div id="searchResult" class="search-result"></div>
-            <h3>Berat</h3>
-            <input id="balBerat" type="number" placeholder="Berat per Pack (gr)">
-            <h3>Harga</h3>
-            <input id="balHarga" type="number" placeholder="Harga Jual">
-            <h3>Bal Diambil</h3>
-            <input id="balAmbil" type="number" placeholder="Bal yang Diambil">
-            <h3>Pack Dihasilkan</h3>
-            <input id="balHasil" type="number" placeholder="Total Pack Dihasilkan">
-            <button onclick="konversiBal()">Proses Konversi</button>
-
-            <div class="table-container">
-            <table id="tabelProdukBal">
-            <thead>
-                <tr>
-                    <th>Kode</th>
-                    <th>Nama</th>
-                    <th>Kategori</th>
-                    <th>Berat</th>
-                    <th>Harga</th>
-                    <th>Stok</th>
-                    <th>Waktu</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-            </table>
-            </div>
         </div>
 
     </div>
 
-    <div id="secPack" class="section" style="display:none;">
+    <div id="secMakanan" class="section" style="display:none;">
         <h3>Nama Barang</h3>
         <input id="packNama" placeholder="Nama Barang">
-        <h3>Jumlah</h3>
-        <input id="packQty" type="number" inputmode="numeric" placeholder="Jumlah Pcs">
+        <h3>Berat (Opsional)</h3>
+        <input id="makanBerat" type="number" inputmode="numeric" placeholder="Berat (gr)">
         <h3>Harga</h3>
-        <input id="packHarga" type="number" inputmode="numeric" placeholder="Harga">
-        <button onclick="simpanPack()">Simpan ke Etalase</button>
+        <input id="packHarga" type="text" inputmode="numeric" inputmode="numeric" placeholder="Harga">
+        <button onclick="simpanMakanan()">Simpan ke Etalase</button>
 
         <div class="table-container">
-        <table id="tabelProdukPack">
+        <table id="tabelMakanan">
         <thead>
             <tr>
                 <th>Kode</th>
                 <th>Nama</th>
                 <th>Kategori</th>
+                <th>Berat</th>
                 <th>Harga</th>
-                <th>Stok</th>
                 <th>Waktu</th>
             </tr>
         </thead>
@@ -146,7 +105,7 @@
         </div>
 
         <h3>Harga</h3>
-        <input id="minumHarga" type="number" inputmode="numeric" placeholder="Harga">
+        <input id="minumHarga" type="text" inputmode="numeric" inputmode="numeric" placeholder="Harga">
         <button onclick="simpanMinuman()">Simpan Minuman</button>
 
         <div class="table-container">
@@ -172,7 +131,6 @@
 
 <script>
     // State untuk pilihan opsi
-    let gudangFull = [];
 
     let minData = {};
 
@@ -186,196 +144,124 @@
     function switchTab(type) {
         qsa('.section').forEach(s => s.style.display = 'none');
         qsa('.switch-btn').forEach(b => b.classList.remove('active'));
-        
-        if(type === 'bal') {
-            qs('#secBal').style.display = 'block';
-            qs('#tabBal').classList.add('active');
-            switchBalMode('gudang');
-        } else if(type === 'pack') {
-            qs('#secPack').style.display = 'block';
-            qs('#tabPack').classList.add('active');
-            loadProdukPack();
-        } else {
+
+        if(type === 'makanan') {
+            qs('#secMakanan').style.display = 'block';
+            qs('#tabMakanan').classList.add('active');
+            loadMakanan();
+
+        } else if(type === 'minum') {
             qs('#secMinum').style.display = 'block';
             qs('#tabMinum').classList.add('active');
             loadMinuman();
-        }
-    }
 
-    function switchBalMode(mode) {
-        qs('#subGudang').classList.toggle('active', mode === 'gudang');
-        qs('#subEtalase').classList.toggle('active', mode === 'etalase');
-        qs('#inputGudangBal').style.display = mode === 'gudang' ? 'block' : 'none';
-        if (mode === 'gudang') {
-            loadGudangBal();
-        }
-        qs('#inputEtalaseBal').style.display = mode === 'etalase' ? 'block' : 'none';
-        if (mode === 'etalase') {
-            loadGudangSelect();
-            loadProdukBal();
-        }
-    }
-
-    async function simpanGudangBal() {
-        const nama = qs("#balNama").value;
-        const bal = Number(qs("#balJml").value);
-        const isi = Number(qs("#balIsi").value);
-
-        if (!nama || !bal || !isi) {
-            alert("Isi semua data dulu");
-            return;
-        }
-
-        showToast("Berhasil ditambahkan!");
-        qs("#balNama").value = "";
-        qs("#balJml").value = "";
-        qs("#balIsi").value = "";
-
-        const res = await apiPost({
-            action: "tambah_gudang",
-            items: [{
-                nama: nama,
-                bal: bal,
-                isi: isi,
-                satuan: "kg"
-            }]
-        });
-
-        if (res.status === "success") {
-            loadGudangBal(); // refresh data
         } else {
-            alert("Gagal: " + res.message);
+            qs('#secModal').style.display = 'block';
+            qs('#tabModal').classList.add('active');
+            loadModal();
         }
     }
 
-    async function loadGudangBal() {
-        const data = await apiGet("gudang");
+    async function simpanModal() {
 
-        renderGudangBal(data);
-    }
+        const supplier = qs("#modalSupplier").value.trim();
+        const barang = qs("#modalBarang").value.trim();
+        const jumlah = Number(qs("#modalJumlah").value);
+        const modal = parseAngka(qs("#modalHarga").value);
 
-    function renderGudangBal(data) {
-        const tb = qs("#tabelGudangBal tbody");
-
-        tb.innerHTML = "";
-
-        data.forEach(d => {
-            tb.innerHTML += `
-            <tr>
-                <td>${d.kode}</td>
-                <td>${d.nama}</td>
-                <td>${d.bal}</td>
-                <td>${d.isi}</td>
-                <td>${d.satuan}</td>
-                <td>${d.waktu}</td>
-            </tr>`;
-        });
-    }
-
-    window.onload = function() {
-        loadGudangBal();
-    }
-
-    async function loadGudangSelect() {
-        const data = await apiGet("gudang");
-
-        gudangFull = data; // simpan buat filter nanti
-
-        renderSelectGudang(data);
-    }
-
-    function searchGudangLive() {
-        const keyword = qs("#searchGudang").value.toLowerCase();
-        const container = qs("#searchResult");
-
-        if (!keyword) {
-            container.innerHTML = "";
+        if (!supplier || !modal) {
+            alert("Lengkapi data");
             return;
         }
 
-        const filtered = gudangFull.filter(item =>
-            item.nama.toLowerCase().includes(keyword) ||
-            item.kode.toLowerCase().includes(keyword)
-        );
+        showToast("Modal berhasil disimpan!");
 
-        let html = "";
-
-        filtered.slice(0, 10).forEach(item => {
-            html += `
-            <div class="search-item" onclick="pilihGudang('${item.kode}')">
-                <b>${item.nama}</b><br>
-                <small>${item.kode} | Stok: ${item.bal}</small>
-            </div>
-            `;
-        });
-
-        container.innerHTML = html;
-    }
-
-    function pilihGudang(kode) {
-        const item = gudangFull.find(g => g.kode === kode);
-
-        if (!item) return;
-
-        window.selectedGudang = item;
-
-        // isi input biar user tahu yang dipilih
-        qs("#searchGudang").value = item.nama;
-
-        // kosongkan hasil
-        qs("#searchResult").innerHTML = "";
-    }
-
-    async function konversiBal() {
-        if (!window.selectedGudang) {
-            alert("Pilih barang dulu");
-            return;
-        }
-
-        const berat = Number(qs("#balBerat").value);
-        const harga = Number(qs("#balHarga").value);
-        const balAmbil = Number(qs("#balAmbil").value);
-        const pcsHasil = Number(qs("#balHasil").value);
-
-        if (!berat || !harga || !balAmbil || !pcsHasil) {
-            alert("Lengkapi semua data");
-            return;
-        }
-
-        showToast("Berhasil dikonversikan!");
-        qs("#searchGudang").value = "";
-        qs("#balBerat").value = "";
-        qs("#balHarga").value = "";
-        qs("#balAmbil").value = "";
-        qs("#balHasil").value = "";
+        qs("#modalSupplier").value = "";
+        qs("#modalBarang").value = "";
+        qs("#modalJumlah").value = "";
+        qs("#modalHarga").value = "";
 
         const res = await apiPost({
-            action: "packing_etalase",
-            kodeGudang: selectedGudang.kode,
-            namaGudang: selectedGudang.nama,
-            kategori: "makanan",
-            berat: berat,
-            harga: harga,
-            balAmbil: balAmbil,
-            pcsHasil: pcsHasil
+            action: "tambah_modal",
+            supplier: supplier,
+            barang: barang,
+            jumlah: jumlah,
+            modal: modal
         });
 
         if (res.status === "success") {
-            loadGudangSelect(); // refresh gudang
-            loadProdukBal();    // refresh produk
+            loadModal();
         } else {
             alert(res.message);
         }
     }
 
-    async function loadProdukBal() {
-        const data = await apiGet("produk");
+    async function loadModal() {
 
-        renderProdukBal(data);
+        const data = await apiGet("modal");
+
+        renderModal(data);
     }
 
-    function renderProdukBal(data) {
-        const tb = qs("#tabelProdukBal tbody");
+    function renderModal(data) {
+
+        const tb = qs("#tabelModal tbody");
+
+        tb.innerHTML = "";
+
+        data.forEach(d => {
+
+            tb.innerHTML += `
+            <tr>
+                <td>${d[0]}</td>
+                <td>${d[1]}</td>
+                <td>${d[2]}</td>
+                <td>${formatRupiah(d[3])}</td>
+                <td>${d[4]}</td>
+            </tr>`;
+        });
+    }
+
+    async function simpanMakanan() {
+        const nama = qs("#packNama").value.trim();
+        const berat = qs("#makanBerat").value.trim() || "default";
+        const harga = parseAngka(qs("#packHarga").value);
+
+        if (!nama || !harga) {
+            alert("Lengkapi semua data");
+            return;
+        }
+
+        showToast("Berhasil ditambahkan!");
+        qs("#packNama").value = "";
+        qs("#makanBerat").value = "";
+        qs("#packHarga").value = "";
+
+        const res = await apiPost({
+            action: "tambah_makanan",
+            nama: nama,
+            berat: berat,
+            harga: harga
+        });
+
+        if (res.status === "success") {
+            loadMakanan();
+        } else {
+            alert(res.message);
+        }
+    }
+
+    async function loadMakanan() {
+        const data = await apiGet("produk");
+
+        // filter hanya makanan pack (opsional)
+        const filtered = data.filter(d => d.kategori === "makanan");
+
+        renderMakanan(filtered);
+    }
+
+    function renderMakanan(data) {
+        const tb = qs("#tabelMakanan tbody");
 
         tb.innerHTML = "";
 
@@ -386,64 +272,7 @@
                 <td>${d.nama}</td>
                 <td>${d.kategori}</td>
                 <td>${d.berat}</td>
-                <td>${d.harga}</td>
-                <td>${d.stok}</td>
-                <td>${d.waktu}</td>
-            </tr>`;
-        });
-    }
-
-    async function simpanPack() {
-        const nama = qs("#packNama").value.trim();
-        const qty = Number(qs("#packQty").value);
-        const harga = Number(qs("#packHarga").value);
-
-        if (!nama || !qty || !harga) {
-            alert("Lengkapi semua data");
-            return;
-        }
-
-        showToast("Berhasil ditambahkan!");
-        qs("#packNama").value = "";
-        qs("#packQty").value = "";
-        qs("#packHarga").value = "";
-
-        const res = await apiPost({
-            action: "tambah_pack",
-            nama: nama,
-            qty: qty,
-            harga: harga
-        });
-
-        if (res.status === "success") {
-            loadProdukPack();
-        } else {
-            alert(res.message);
-        }
-    }
-
-    async function loadProdukPack() {
-        const data = await apiGet("produk");
-
-        // filter hanya makanan pack (opsional)
-        const filtered = data.filter(d => d.kategori === "makanan");
-
-        renderProdukPack(filtered);
-    }
-
-    function renderProdukPack(data) {
-        const tb = qs("#tabelProdukPack tbody");
-
-        tb.innerHTML = "";
-
-        data.forEach(d => {
-            tb.innerHTML += `
-            <tr>
-                <td>${d.kode}</td>
-                <td>${d.nama}</td>
-                <td>${d.kategori}</td>
-                <td>${d.harga}</td>
-                <td>${d.stok}</td>
+                <td>${formatRupiah(d.harga)}</td>
                 <td>${d.waktu}</td>
             </tr>`;
         });
@@ -464,7 +293,7 @@
 
     async function simpanMinuman() {
         const nama = qs("#minumNama").value.trim();
-        const harga = Number(qs("#minumHarga").value);
+        const harga = parseAngka(qs("#minumHarga").value);
 
         if (!nama || !harga || !minData.Varian || !minData.Topping || !minData.Ukuran) {
             alert("Lengkapi data");
@@ -510,25 +339,34 @@
                 <td>${d.nama}</td>
                 <td>${d.topping}</td>
                 <td>${d.ukuran}</td>
-                <td>${d.harga}</td>
+                <td>${formatRupiah(d.harga)}</td>
                 <td>${d.waktu}</td>
             </tr>`;
         });
     }
 
     function showToast(msg) {
-    const t = document.createElement("div");
-    t.className = "toast";
-    t.innerText = msg;
+        const t = document.createElement("div");
+        t.className = "toast";
+        t.innerText = msg;
 
-    document.body.appendChild(t);
+        document.body.appendChild(t);
 
-    setTimeout(() => t.classList.add("show"), 10);
+        setTimeout(() => t.classList.add("show"), 10);
 
-    setTimeout(() => {
-        t.classList.remove("show");
-        setTimeout(() => t.remove(), 300);
-    }, 2000);
+        setTimeout(() => {
+            t.classList.remove("show");
+            setTimeout(() => t.remove(), 300);
+        }, 2000);
+    }
+    
+    window.onload = function () {
+
+        switchTab('modal');
+
+        activeFormatInput("#modalHarga");
+        activeFormatInput("#packHarga");
+        activeFormatInput("#minumHarga");
     }
 </script>
 </body>

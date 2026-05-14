@@ -20,8 +20,21 @@
 <h2>Pilih Produk</h2>
 
     <div class="switch-container">
-        <div id="tabMakanan" class="switch-btn active" onclick="switchKategori('makanan')">Makanan</div>
-        <div id="tabMinuman" class="switch-btn" onclick="switchKategori('minuman')">Minuman</div>
+
+        <div id="tabMakanan" class="switch-btn"
+            onclick="switchKategori('makanan')">
+            Makanan
+        </div>
+
+        <div id="tabSemua" class="switch-btn active"
+            onclick="switchKategori('semua')">
+            Semua
+        </div>
+
+        <div id="tabMinuman" class="switch-btn"
+            onclick="switchKategori('minuman')">
+            Minuman
+        </div>
     </div>
 
     <div class="search-box">
@@ -52,7 +65,7 @@
 
 <script>
 
-let kategoriAktif = "makanan";
+let kategoriAktif = "semua";
 let produk = [];
 let cart = {};
 
@@ -62,10 +75,31 @@ window.onload = async function() {
 };
 
 async function loadProdukByKategori() {
+
     if (kategoriAktif === "makanan") {
+
         produk = await apiGet("produk");
-    } else {
+
+    } else if (kategoriAktif === "minuman") {
+
         produk = await apiGet("minuman");
+
+    } else {
+
+        const makanan = await apiGet("produk");
+        const minuman = await apiGet("minuman");
+
+        produk = [
+            ...makanan.map(i => ({
+                ...i,
+                jenis: "makanan"
+            })),
+
+            ...minuman.map(i => ({
+                ...i,
+                jenis: "minuman"
+            }))
+        ];
     }
 
     renderProduk();
@@ -76,6 +110,7 @@ function switchKategori(kat) {
 
     // update UI tombol
     qs("#tabMakanan").classList.toggle("active", kat === "makanan");
+    qs("#tabSemua").classList.toggle("active", kat === "semua");
     qs("#tabMinuman").classList.toggle("active", kat === "minuman");
 
     // reset search
@@ -90,33 +125,49 @@ function switchKategori(kat) {
 }
 
 function renderProduk(data = produk) {
+
     const grid = qs("#produkGrid");
+
     grid.innerHTML = "";
 
+    // MODE SEMUA
+    if (kategoriAktif === "semua") {
+
+        const makanan = data.filter(p => p.jenis === "makanan");
+        const minuman = data.filter(p => p.jenis === "minuman");
+
+        if (makanan.length > 0) {
+
+            grid.innerHTML += `
+                <div class="sub-header">
+                    Makanan
+                </div>
+            `;
+
+            makanan.forEach(p => {
+                renderCard(p);
+            });
+        }
+
+        if (minuman.length > 0) {
+
+            grid.innerHTML += `
+                <div class="sub-header">
+                    Minuman
+                </div>
+            `;
+
+            minuman.forEach(p => {
+                renderCard(p);
+            });
+        }
+
+        return;
+    }
+
+    // MODE NORMAL
     data.forEach(p => {
-
-        let stok = p.stok ?? 999; // minuman dianggap selalu ada
-        const habis = kategoriAktif === "makanan" && Number(stok) <= 0;
-
-        grid.innerHTML += `
-            <div class="card ${habis ? 'habis' : ''}" id="item-${p.kode}"
-                 onclick="pilihProduk('${p.kode}', ${p.harga}, ${stok}, '${p.nama}')">
-                 
-                <b>
-                ${kategoriAktif === "minuman"
-                    ? formatNamaMinuman(p)
-                    : p.nama
-                }
-                </b><br>
-                <small>${formatRupiah(p.harga)}</small>
-
-                ${kategoriAktif === "makanan" ? `
-                    <div class="stok-label">Stok: ${stok}</div>
-                ` : ""}
-
-                ${habis ? "<small style='color:red'>Habis</small>" : ""}
-            </div>
-        `;
+        renderCard(p);
     });
 }
 
@@ -134,13 +185,39 @@ function formatNamaMinuman(p) {
     return teks.trim();
 }
 
-/* PILIH / BATAL PILIH PRODUK */
-function pilihProduk(kode, harga, stok, nama) {
+function renderCard(p) {
 
-    if (stok <= 0) {
-        alert("Stok habis!");
-        return;
-    }
+    const grid = qs("#produkGrid");
+    const namaTampil = p.varian
+    ? formatNamaMinuman(p)
+    : p.nama;
+
+    grid.innerHTML += `
+        <div class="card"
+            id="item-${p.kode}"
+            onclick="pilihProduk(
+                '${p.kode}',
+                ${p.harga},
+                '${p.varian ? formatNamaMinuman(p) : p.nama}',
+                '${p.kategori || p.jenis}'
+            )">
+            <b>
+                ${p.varian
+                    ? formatNamaMinuman(p)
+                    : p.nama
+                }
+            </b><br>
+
+            <small>
+                ${formatRupiah(p.harga)}
+            </small>
+
+        </div>
+    `;
+}
+
+/* PILIH / BATAL PILIH PRODUK */
+function pilihProduk(kode, harga, nama, kategori) {
 
     if (cart[kode]) {
         delete cart[kode];
@@ -150,7 +227,7 @@ function pilihProduk(kode, harga, stok, nama) {
             nama: nama,
             harga: harga,
             jumlah: 1,
-            stok: stok
+            kategori: kategori
         };
         qs("#item-" + kode).classList.add("selected");
     }
@@ -199,21 +276,6 @@ function updateCart() {
     qs("#totalPrice").innerHTML = formatRupiah(total);
 }
 
-/* CEGAH JUMLAH > STOK */
-function ubahQty(kode, delta) {
-    cart[kode].jumlah += delta;
-
-    if (cart[kode].jumlah < 1) {
-        delete cart[kode];
-        qs("#item-" + kode).classList.remove("selected");
-    } else if (cart[kode].jumlah > cart[kode].stok) {
-        cart[kode].jumlah = cart[kode].stok;
-        alert("Jumlah melebihi stok!");
-    }
-
-    updateCart();
-}
-
 /* KIRIM KE BACKEND */
 
 async function kirimTransaksi() {
@@ -221,14 +283,14 @@ async function kirimTransaksi() {
         kode: k,
         nama: cart[k].nama,
         harga: cart[k].harga,
-        jumlah: cart[k].jumlah
+        jumlah: cart[k].jumlah,
+        kategori: cart[k].kategori
     }));
 
     apiPost({
         action: "jual_batch",
         items: items.map(i => ({
             ...i,
-            kategori: kategoriAktif // ini penting
         }))
     });
 
@@ -267,7 +329,8 @@ function showToast(msg) {
         t.classList.remove("show");
         setTimeout(() => t.remove(), 300);
     }, 2000);
-    }
+}
+
 
 </script>
 

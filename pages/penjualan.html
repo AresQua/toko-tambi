@@ -2,127 +2,300 @@
 <html>
 <head>
     <title>Laporan Penjualan</title>
+
     <link rel="icon" type="image/png" href="../icon.png">
     <link rel="apple-touch-icon" href="../icon.png">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="../assets/style.css">
     <script src="../assets/core.js"></script>
 </head>
+
 <body>
 
 <div class="container-2">
-    <button class="btn-back" onclick="location.href='../index.html'" style="width: auto;">Kembali</button> 
+    <button class="btn-back"
+        onclick="location.href='../index.html'"
+        style="width:auto;">
+        Kembali
+    </button>
+
     <h1>Laporan Penjualan</h1>
 </div>
 
 <div class="isian">
+
+    <!-- SWITCH FILTER -->
     <div class="switch-container">
-        <div id="lapMakanan" class="switch-btn active" onclick="switchLaporan('makanan')">Makanan</div>
-        <div id="lapMinuman" class="switch-btn" onclick="switchLaporan('minuman')">Minuman</div>
+
+        <div
+            id="tabMakanan"
+            class="switch-btn"
+            onclick="switchKategori('makanan')">
+
+            Makanan
+        </div>
+
+        <div
+            id="tabSemua"
+            class="switch-btn active"
+            onclick="switchKategori('semua')">
+
+            Semua
+        </div>
+
+        <div
+            id="tabMinuman"
+            class="switch-btn"
+            onclick="switchKategori('minuman')">
+
+            Minuman
+        </div>
+
     </div>
+
+    <!-- TABEL -->
     <div class="table-container">
+
         <table id="tabelJual">
-        <thead>
-            <tr>
-                <th>Tanggal</th>
-                <th>Jam</th>
-                <th>Nama Produk</th>
-                <th>Kode</th>
-                <th>Jumlah</th>
-                <th>Harga</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Jam</th>
+                    <th>Kategori</th>
+                    <th>Nama Produk</th>
+                    <th>Kode</th>
+                    <th>Jumlah</th>
+                    <th>Harga</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody></tbody>
+
+        </table>
+
     </div>
+
 </div>
 
 <script>
 
-let laporanAktif = "makanan";
+let semuaData = [];
+let kategoriAktif = "semua";
 
-async function load() {
-    let data;
+/* =========================
+   LOAD DATA
+========================= */
 
-    if (laporanAktif === "makanan") {
-        data = await apiGet("penjualan");
-    } else {
-        data = await apiGet("penjualan_minuman");
-    }
+async function loadPenjualan() {
 
-    renderLaporan(data);
+    const data = await apiGet("penjualan_semua");
+
+    semuaData = data;
+
+    renderPenjualan();
 }
 
-function renderLaporan(data) {
+/* =========================
+   SWITCH KATEGORI
+========================= */
+
+function switchKategori(kat) {
+
+    kategoriAktif = kat;
+
+    qs("#tabMakanan").classList.remove("active");
+    qs("#tabSemua").classList.remove("active");
+    qs("#tabMinuman").classList.remove("active");
+
+    if (kat === "makanan") {
+        qs("#tabMakanan").classList.add("active");
+    }
+
+    else if (kat === "minuman") {
+        qs("#tabMinuman").classList.add("active");
+    }
+
+    else {
+        qs("#tabSemua").classList.add("active");
+    }
+
+    renderPenjualan();
+}
+
+/* =========================
+   RENDER
+========================= */
+
+function renderPenjualan() {
+
     const tb = qs("#tabelJual tbody");
+
     tb.innerHTML = "";
 
-    if (!data || data.length === 0) {
-        tb.innerHTML = "<tr><td colspan='7' style='text-align:center;color:#888'>Belum ada data penjualan.</td></tr>";
+    let data = semuaData;
+
+    // FILTER
+    if (kategoriAktif !== "semua") {
+
+        data = semuaData.filter(d =>
+            d[2] === kategoriAktif
+        );
+    }
+
+    if (!data.length) {
+
+        tb.innerHTML = `
+        <tr>
+            <td colspan="8"
+                style="text-align:center;color:#888;">
+
+                Belum ada data.
+            </td>
+        </tr>`;
+
         return;
     }
+
+    // =========================
+    // GROUP TRANSAKSI
+    // =========================
 
     const groups = {};
 
     data.forEach(r => {
+
         const key = r[0] + " " + r[1];
 
         if (!groups[key]) {
+
             groups[key] = {
                 tanggal: r[0],
                 jam: r[1],
-                totalOmset: 0,
                 totalQty: 0,
+                totalOmset: 0,
                 details: []
             };
         }
 
         groups[key].details.push(r);
-        groups[key].totalQty += Number(r[4]);
-        groups[key].totalOmset += Number(r[6]);
+
+        groups[key].totalQty += Number(r[5]);
+
+        groups[key].totalOmset += Number(
+            String(r[7]).replace(/\./g, "")
+        );
     });
 
-    Object.keys(groups).reverse().forEach(k => {
-        const tx = groups[k];
+    // =========================
+    // RENDER GROUP
+    // =========================
+
+    Object.keys(groups)
+        .reverse()
+        .forEach(key => {
+
+        const tx = groups[key];
 
         tb.innerHTML += `
-        <tr style="background:#f5f5f5; font-weight:bold;">
+
+        <tr style="
+            background:#f5f5f5;
+            font-weight:bold;
+        ">
+
             <td>${tx.tanggal}</td>
+
             <td>${tx.jam}</td>
-            <td colspan="2">Total Item: ${tx.totalQty}</td>
+
+            <td colspan="3">
+                Total Item:
+                ${tx.totalQty}
+            </td>
+
             <td colspan="2"></td>
-            <td>Rp ${tx.totalOmset.toLocaleString()}</td>
+
+            <td>
+                ${formatRupiah(tx.totalOmset)}
+            </td>
+
         </tr>
         `;
 
+        // DETAIL ITEM
+
         tx.details.forEach(d => {
+
             tb.innerHTML += `
             <tr class="detail-row">
+
                 <td></td>
+
                 <td></td>
-                <td>${d[2]}</td>
+
+                <td>${capitalize(d[2])}</td>
+
                 <td>${d[3]}</td>
+
                 <td>${d[4]}</td>
-                <td>${formatRupiah(d[5])}</td>
-                <td>${formatRupiah(d[6])}</td>
-            </tr>`;
+
+                <td>${d[5]}</td>
+
+                <td>
+                    ${formatRupiah(
+                        Number(
+                            String(d[6]).replace(/\./g, "")
+                        )
+                    )}
+                </td>
+
+                <td>
+                    ${formatRupiah(
+                        Number(
+                            String(d[7]).replace(/\./g, "")
+                        )
+                    )}
+                </td>
+
+            </tr>
+            `;
         });
 
-        tb.innerHTML += `<tr><td colspan="7" style="background:#ddd; height:3px"></td></tr>`;
+        // GARIS PEMISAH
+
+        tb.innerHTML += `
+        <tr>
+            <td colspan="8"
+                style="
+                    background:#ddd;
+                    height:3px;
+                ">
+            </td>
+        </tr>`;
     });
 }
 
-function switchLaporan(kat) {
-    laporanAktif = kat;
+/* =========================
+   HELPER
+========================= */
 
-    qs("#lapMakanan").classList.toggle("active", kat === "makanan");
-    qs("#lapMinuman").classList.toggle("active", kat === "minuman");
+function capitalize(text) {
 
-    load();
+    if (!text) return "";
+
+    return text.charAt(0).toUpperCase()
+        + text.slice(1);
 }
 
-load();
+/* =========================
+   START
+========================= */
+
+loadPenjualan();
+
 </script>
 
 </body>

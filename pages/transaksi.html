@@ -276,6 +276,27 @@ function updateCart() {
     qs("#totalPrice").innerHTML = formatRupiah(total);
 }
 
+function ubahQty(kode, perubahan) {
+
+    if (!cart[kode]) return;
+
+    cart[kode].jumlah += perubahan;
+
+    // kalau jumlah <= 0 hapus dari cart
+    if (cart[kode].jumlah <= 0) {
+
+        delete cart[kode];
+
+        const el = qs("#item-" + kode);
+
+        if (el) {
+            el.classList.remove("selected");
+        }
+    }
+
+    updateCart();
+}
+
 /* KIRIM KE BACKEND */
 
 async function kirimTransaksi() {
@@ -303,11 +324,19 @@ async function kirimTransaksi() {
 }
 
 function filterProduk() {
-    const keyword = qs("#searchInput").value.toLowerCase();
+
+    const keyword = qs("#searchInput")
+        .value
+        .toLowerCase();
 
     const filtered = produk.filter(p => {
+
+        const namaProduk = p.varian
+            ? formatNamaMinuman(p)
+            : p.nama;
+
         return (
-            p.nama.toLowerCase().includes(keyword) ||
+            namaProduk.toLowerCase().includes(keyword) ||
             p.kode.toLowerCase().includes(keyword) ||
             String(p.harga).includes(keyword)
         );

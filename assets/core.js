@@ -1,7 +1,7 @@
 const colorPalette = ["#8BC34A", "#C8E6C9", "#c2e475", "#ffffff"];
 
 /* API ROOT */
-const API = "https://script.google.com/macros/s/AKfycbwujXro8JofP9m6pvS17mLSQtRXJRND0vhY3cesRw7X8JADfed4kgxFgWcPvy9941Ge/exec";
+const API = "https://script.google.com/macros/s/AKfycbxRZMrcbZx1O7zFTy6A4HVYilRscmkb10ilTO7hEAyNoTF8x-5fC7m8vwvay-KvS2RI/exec";
 
 /* GET */
 async function apiGet(action) {
@@ -28,7 +28,44 @@ async function apiPost(obj) {
 
 /* Helpers */
 function formatRupiah(num) {
-    return "Rp " + num.toLocaleString("id-ID");
+
+    if (!num) return "Rp 0";
+
+    return "Rp " + Number(num).toLocaleString("id-ID");
+}
+
+function formatAngka(num) {
+
+    if (num === undefined || num === null || num === "") {
+        return "0";
+    }
+
+    return Number(num).toLocaleString("id-ID");
+}
+
+function parseAngka(str) {
+
+    if (!str) return 0;
+
+    return Number(
+        str.toString().replace(/\./g, "")
+    );
+}
+
+function activeFormatInput(id) {
+
+    const input = qs(id);
+
+    if (!input) return;
+
+    input.addEventListener("input", function () {
+
+        let value = this.value.replace(/\D/g, "");
+
+        this.value = value
+            ? formatAngka(value)
+            : "";
+    });
 }
 
 function qs(sel) { return document.querySelector(sel); }

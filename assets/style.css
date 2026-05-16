@@ -627,6 +627,81 @@ tr:hover td {
     transform: translateX(-50%) translateY(0);
 }
 
+.search-item-row {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    background: white;
+
+    border-bottom: 1px solid #eee;
+
+    padding: 10px 12px;
+}
+
+.search-item-text {
+
+    flex: 1;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.search-item-text:hover {
+
+    color: var(--green-dark);
+}
+
+.search-delete-btn {
+
+    width: 28px !important;
+    height: 28px !important;
+
+    min-width: 28px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: none !important;
+
+    background: transparent !important;
+
+    color: #ff5a5a !important;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    box-shadow: none !important;
+
+    transform: none !important;
+}
+
+.search-delete-btn:hover {
+
+    background: #ffecec !important;
+
+    transform: scale(1.08) !important;
+}
+
 /* --- RESPONSIVE UNTUK HP (Media Query) --- */
 @media screen and (max-width: 600px) {
     .header h1 {

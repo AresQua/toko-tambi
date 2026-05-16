@@ -18,6 +18,7 @@
 <div class="isian">
     <div class="switch-container">
         <div id="tabModal" class="switch-btn active" onclick="switchTab('modal')">Suply</div>
+        <div id="tabOperasional" class="switch-btn" onclick="switchTab('operasional')">Operasional</div>
         <div id="tabMakanan" class="switch-btn" onclick="switchTab('makanan')">Makanan</div>
         <div id="tabMinum" class="switch-btn" onclick="switchTab('minum')">Minuman</div>
     </div>
@@ -27,7 +28,7 @@
         <input id="modalSupplier" placeholder="Nama Supplier">
         <h3>Keterangan (Opsional)</h3>
         <input id="modalBarang" placeholder="Keterangan">
-        <h3>Jumlah Barang (Opsional)</h3>
+        <h3>Jumlah Barang / Pengiriman (Opsional)</h3>
         <input id="modalJumlah" type="number" placeholder="Jumlah Barang">
         <h3>Harga Suply</h3>
         <input id="modalHarga" type="text" inputmode="numeric" placeholder="Total Modal">
@@ -46,6 +47,71 @@
                 </thead>
                 <tbody></tbody>
             </table>
+        </div>
+
+    </div>
+
+    <div id="secOperasional"
+        class="section"
+        style="display:none;">
+
+        <h3>Nama Biaya Operasional</h3>
+
+        <div style="position:relative;">
+
+            <input
+                id="operasionalNama"
+                placeholder="Nama biaya..."
+                autocomplete="off"
+                onfocus="showOperasionalHistory()"
+                oninput="filterOperasionalHistory()"
+            >
+
+            <div id="operasionalDropdown"
+                class="search-result"
+                style="
+                    display:none;
+                    position:absolute;
+                    width:100%;
+                    z-index:99;
+                ">
+            </div>
+
+        </div>
+
+        <h3>Keterangan (Opsional)</h3>
+        <input id="operasionalKet"
+            placeholder="Keterangan">
+
+        <h3>Biaya</h3>
+        <input
+            id="operasionalBiaya"
+            type="text"
+            inputmode="numeric"
+            placeholder="Biaya"
+        >
+
+        <button onclick="simpanOperasional()">
+            Simpan Operasional
+        </button>
+
+        <div class="table-container">
+
+            <table id="tabelOperasional">
+
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Keterangan</th>
+                        <th>Biaya</th>
+                        <th>Waktu</th>
+                    </tr>
+                </thead>
+
+                <tbody></tbody>
+
+            </table>
+
         </div>
 
     </div>
@@ -145,7 +211,12 @@
         qsa('.section').forEach(s => s.style.display = 'none');
         qsa('.switch-btn').forEach(b => b.classList.remove('active'));
 
-        if(type === 'makanan') {
+        if(type === 'operasional') {
+            qs('#secOperasional').style.display = 'block';
+            qs('#tabOperasional').classList.add('active');
+            loadOperasional();
+
+        } else if(type === 'makanan') {
             qs('#secMakanan').style.display = 'block';
             qs('#tabMakanan').classList.add('active');
             loadMakanan();
@@ -345,6 +416,103 @@
         });
     }
 
+        function selectOperasional(val) {
+
+            qs("#operasionalNama").value = val;
+
+            qs("#operasionalDropdown")
+                .style.display = "none";
+        }
+
+        async function simpanOperasional() {
+
+        const nama = qs("#operasionalNama")
+            .value
+            .trim();
+
+        const ket = qs("#operasionalKet")
+            .value
+            .trim();
+
+        const biaya = parseAngka(
+            qs("#operasionalBiaya").value
+        );
+
+        if(!nama || !biaya) {
+
+            alert("Lengkapi data");
+            return;
+        }
+
+        // simpan history
+        let history = JSON.parse(
+            localStorage.getItem("operasionalHistory") || "[]"
+        );
+
+        if(!history.includes(nama)) {
+
+            history.push(nama);
+
+            localStorage.setItem(
+                "operasionalHistory",
+                JSON.stringify(history)
+            );
+        }
+
+        showToast("Operasional berhasil disimpan!");
+
+        qs("#operasionalNama").value = "";
+        qs("#operasionalKet").value = "";
+        qs("#operasionalBiaya").value = "";
+
+        const res = await apiPost({
+
+            action: "tambah_operasional",
+
+            nama: nama,
+
+            keterangan:
+                ket || "Kebutuhan operasional toko",
+
+            biaya: biaya
+        });
+
+        if(res.status === "success") {
+
+            loadOperasional();
+
+        } else {
+
+            alert(res.message);
+        }
+    }
+
+    async function loadOperasional() {
+
+        const data = await apiGet("operasional");
+
+        renderOperasional(data);
+    }
+
+    function renderOperasional(data) {
+
+        const tb = qs("#tabelOperasional tbody");
+
+        tb.innerHTML = "";
+
+        data.forEach(d => {
+
+            tb.innerHTML += `
+            <tr>
+                <td>${d[0]}</td>
+                <td>${d[1]}</td>
+                <td>${formatRupiah(d[2])}</td>
+                <td>${d[3]}</td>
+            </tr>
+            `;
+        });
+    }
+
     function showToast(msg) {
         const t = document.createElement("div");
         t.className = "toast";
@@ -359,6 +527,116 @@
             setTimeout(() => t.remove(), 300);
         }, 2000);
     }
+
+    function showOperasionalHistory() {
+
+        const history = JSON.parse(
+            localStorage.getItem("operasionalHistory") || "[]"
+        );
+
+        const box = qs("#operasionalDropdown");
+
+        if(history.length === 0) {
+            box.style.display = "none";
+            return;
+        }
+
+        box.innerHTML = history.map(item => `
+            <div class="search-item-row">
+
+                <div class="search-item-text"
+                    onclick="selectOperasional('${item}')">
+
+                    ${item}
+
+                </div>
+
+                <button class="search-delete-btn"
+                    onclick="hapusOperasionalHistory('${item}')">
+
+                    ×
+
+                </button>
+
+            </div>
+        `).join("");
+
+        box.style.display = "block";
+    }
+
+    function filterOperasionalHistory() {
+
+        const val = qs("#operasionalNama")
+            .value
+            .toLowerCase();
+
+        const history = JSON.parse(
+            localStorage.getItem("operasionalHistory") || "[]"
+        );
+
+        const filtered = history.filter(i =>
+            i.toLowerCase().includes(val)
+        );
+
+        const box = qs("#operasionalDropdown");
+
+        if(filtered.length === 0) {
+            box.style.display = "none";
+            return;
+        }
+
+        box.innerHTML = filtered.map(item => `
+            <div class="search-item-row">
+
+                <div class="search-item-text"
+                    onclick="selectOperasional('${item}')">
+
+                    ${item}
+
+                </div>
+
+                <button class="search-delete-btn"
+                    onclick="hapusOperasionalHistory('${item}')">
+
+                    ×
+
+                </button>
+
+            </div>
+        `).join("");
+
+        box.style.display = "block";
+
+        document.addEventListener("click", function(e) {
+
+            const box = qs("#operasionalDropdown");
+            const input = qs("#operasionalNama");
+
+            if(
+                e.target !== input &&
+                !box.contains(e.target)
+            ) {
+
+                box.style.display = "none";
+            }
+        });
+    }
+
+    function hapusOperasionalHistory(item) {
+
+        let history = JSON.parse(
+            localStorage.getItem("operasionalHistory") || "[]"
+        );
+
+        history = history.filter(i => i !== item);
+
+        localStorage.setItem(
+            "operasionalHistory",
+            JSON.stringify(history)
+        );
+
+        filterOperasionalHistory();
+    }
     
     window.onload = function () {
 
@@ -367,6 +645,7 @@
         activeFormatInput("#modalHarga");
         activeFormatInput("#packHarga");
         activeFormatInput("#minumHarga");
+        activeFormatInput("#operasionalBiaya");
     }
 </script>
 </body>

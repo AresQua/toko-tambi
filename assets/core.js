@@ -1,7 +1,7 @@
 const colorPalette = ["#8BC34A", "#C8E6C9", "#c2e475", "#ffffff"];
 
 /* API ROOT */
-const API = "https://script.google.com/macros/s/AKfycbxRZMrcbZx1O7zFTy6A4HVYilRscmkb10ilTO7hEAyNoTF8x-5fC7m8vwvay-KvS2RI/exec";
+const API = "https://script.google.com/macros/s/AKfycbz4V03001bK1lgKA2EapHVAcEwtXJPitjl1WAzckGyYcUxHd7Baz2ud7k5-BJW4yI5q/exec";
 
 /* GET */
 async function apiGet(action) {

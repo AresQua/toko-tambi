@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Manajemen - Tambi</title>
+
+    <link rel="icon" href="../icon.png">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <link
+        rel="stylesheet"
+        href="../assets/style.css">
+
+    <script
+        src="../assets/core.js">
+    </script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="container-2">
+
+        <button
+            class="btn-back"
+            onclick="location.href='../index.html'">
+
+            Kembali
+
+        </button>
+
+        <h1>Manajemen</h1>
+
+    </div>
+
+
+    <div class="isian">
+
+        <!-- ====================================== -->
+        <!-- SWITCH UTAMA -->
+        <!-- ====================================== -->
+
+        <div class="switch-container">
+
+            <div
+                id="tabSupply"
+                class="switch-btn active"
+                onclick="switchMain('supply')">
+
+                Supply
+
+            </div>
+
+            <div
+                id="tabMakanan"
+                class="switch-btn"
+                onclick="switchMain('makanan')">
+
+                Makanan
+
+            </div>
+
+            <div
+                id="tabMinuman"
+                class="switch-btn"
+                onclick="switchMain('minuman')">
+
+                Minuman
+
+            </div>
+
+            <div
+                id="tabOperasional"
+                class="switch-btn"
+                onclick="switchMain('operasional')">
+
+                Operasional
+
+            </div>
+
+        </div>
+
+
+        <!-- ====================================== -->
+        <!-- SUPPLY -->
+        <!-- ====================================== -->
+
+        <section
+            id="secSupply">
+
+            <h3>
+                Supplier
+            </h3>
+
+            <input
+                id="supplySupplier"
+                placeholder="Nama Supplier">
+
+
+            <h3>
+                Detail Barang
+            </h3>
+
+            <div
+                id="supplyItems">
+
+            </div>
+
+            <button
+                type="button"
+                onclick="tambahBarisSupply()">
+
+                + Tambah Barang
+
+            </button>
+
+
+            <div
+                class="form-row mt-20">
+
+                <div>
+
+                    <h3>
+                        Subtotal Qty
+                    </h3>
+
+                    <input
+                        id="subtotalQty">
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Subtotal Modal
+                    </h3>
+
+                    <input
+                        id="subtotalModal">
+
+                </div>
+
+            </div>
+
+
+            <button
+                onclick="simpanSupply()">
+
+                Simpan Supply
+
+            </button>
+
+
+            <button
+                class="btn-warning"
+                onclick="toggleReturn()">
+
+                Input Return
+
+            </button>
+
+
+            <div
+                id="returnBox"
+                class="hidden">
+
+                <h3>
+                    Supplier
+                </h3>
+
+                <input
+                    id="returnSupplier">
+
+                <h3>
+                    Nama Barang
+                </h3>
+
+                <input
+                    id="returnBarang">
+
+                <h3>
+                    Berat
+                </h3>
+
+                <input
+                    id="returnBerat">
+
+                <h3>
+                    Qty Return
+                </h3>
+
+                <input
+                    id="returnQty">
+
+                <h3>
+                    Alasan
+                </h3>
+
+                <input
+                    id="returnAlasan">
+
+                <button
+                    onclick="simpanReturn()">
+
+                    Simpan Return
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="table-container">
+
+                <table
+                    id="tblSupply">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Supplier</th>
+
+                        <th>Barang</th>
+
+                        <th>Qty</th>
+
+                        <th>Berat</th>
+
+                        <th>Modal</th>
+
+                        <th>Tanggal</th>
+
+                        <th>Jam</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ====================================== -->
+        <!-- MAKANAN -->
+        <!-- ====================================== -->
+
+        <section
+            id="secMakanan"
+            class="hidden">
+
+        <!-- ====================================== -->
+        <!-- SWITCH MAKANAN -->
+        <!-- ====================================== -->
+
+        <div class="switch-container">
+
+            <div
+                id="subBal"
+                class="switch-btn active"
+                onclick="switchMakanan('bal')">
+
+                Makanan Bal
+
+            </div>
+
+            <div
+                id="subPack"
+                class="switch-btn"
+                onclick="switchMakanan('pack')">
+
+                Makanan Pack
+
+            </div>
+
+        </div>
+
+
+        <!-- ====================================== -->
+        <!-- MAKANAN BAL -->
+        <!-- ====================================== -->
+
+        <div id="secBal">
+
+            <h3>
+                Supplier
+            </h3>
+
+            <div class="search-container">
+
+                <input
+                    id="balSupplier"
+                    placeholder="Cari supplier">
+
+                <div
+                    id="balSupplierResult"
+                    class="search-result">
+                </div>
+
+            </div>
+
+
+            <h3>
+                Session Supply
+            </h3>
+
+            <select id="balSession">
+
+                <option value="">
+                    Pilih Session Supply
+                </option>
+
+            </select>
+
+
+            <button
+                onclick="ambilSupplySession()">
+
+                Ambil Barang Supply
+
+            </button>
+
+
+            <button
+                onclick="loadSupplySession()">
+
+                Ambil Barang Supply
+
+            </button>
+
+
+            <div
+                id="balItems">
+
+            </div>
+
+
+            <button
+                onclick="tambahBarisBal()">
+
+                + Tambah Produk
+
+            </button>
+
+
+            <button
+                onclick="simpanBal()">
+
+                Simpan Produk Bal
+
+            </button>
+
+
+            <div class="switch-container mt-20">
+
+                <div
+                    id="tblBalBtn"
+                    class="switch-btn active"
+                    onclick="switchTabelMakanan('bal')">
+
+                    Database Bal
+
+                </div>
+
+                <div
+                    id="tblPackBtn"
+                    class="switch-btn"
+                    onclick="switchTabelMakanan('pack')">
+
+                    Database Pack
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="tblBalBox">
+
+                <div class="table-container">
+
+                    <table
+                        id="tblBal">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>Kode</th>
+
+                            <th>Nama</th>
+
+                            <th>Kategori</th>
+
+                            <th>Berat</th>
+
+                            <th>Harga</th>
+
+                            <th>Stok</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ====================================== -->
+        <!-- MAKANAN PACK -->
+        <!-- ====================================== -->
+
+        <div
+            id="secPack"
+            class="hidden">
+
+            <div
+                id="packItems">
+
+            </div>
+
+
+            <button
+                onclick="tambahBarisPack()">
+
+                + Tambah Konversi
+
+            </button>
+
+
+            <button
+                onclick="simpanPack()">
+
+                Simpan Konversi
+
+            </button>
+
+
+            <div
+                id="tblPackBox"
+                class="hidden">
+
+                <div class="table-container">
+
+                    <table
+                        id="tblPack">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>Kode</th>
+
+                            <th>Parent</th>
+
+                            <th>Nama</th>
+
+                            <th>Kategori</th>
+
+                            <th>Berat</th>
+
+                            <th>Harga</th>
+
+                            <th>Stok</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        </section>
+
+
+        <!-- ====================================== -->
+        <!-- MINUMAN -->
+        <!-- ====================================== -->
+
+        <section
+            id="secMinuman"
+            class="hidden">
+
+                    <!-- ====================================== -->
+        <!-- SWITCH MINUMAN -->
+        <!-- ====================================== -->
+
+        <div class="switch-container">
+
+            <div
+                id="tabSupplyMinuman"
+                class="switch-btn active"
+                onclick="switchMinuman('supply')">
+
+                Supply Minuman
+
+            </div>
+
+            <div
+                id="tabProdukMinuman"
+                class="switch-btn"
+                onclick="switchMinuman('produk')">
+
+                Produk Minuman
+
+            </div>
+
+        </div>
+
+
+        <!-- ====================================== -->
+        <!-- SUPPLY MINUMAN -->
+        <!-- ====================================== -->
+
+        <div id="secSupplyMinuman">
+
+            <h3>
+                Supplier
+            </h3>
+
+            <input
+                id="supMinSupplier"
+                placeholder="Nama Supplier">
+
+
+            <h3>
+                Barang
+            </h3>
+
+            <div
+                id="supMinItems">
+
+            </div>
+
+
+            <button
+                onclick="tambahBarisSupplyMinuman()">
+
+                + Tambah Barang
+
+            </button>
+
+
+            <button
+                onclick="simpanSupplyMinuman()">
+
+                Simpan Supply
+
+            </button>
+
+
+            <div class="table-container">
+
+                <table
+                    id="tblSupplyMinuman">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Supplier</th>
+
+                        <th>Barang</th>
+
+                        <th>Qty</th>
+
+                        <th>Modal</th>
+
+                        <th>Tanggal</th>
+
+                        <th>Jam</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- ====================================== -->
+        <!-- PRODUK MINUMAN -->
+        <!-- ====================================== -->
+
+        <div
+            id="secProdukMinuman"
+            class="hidden">
+
+            <h3>
+                Varian
+            </h3>
+
+            <div
+                class="option-group"
+                id="optVarian">
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Varian','Teh',this)">
+
+                    Teh
+
+                </div>
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Varian','Smoothies',this)">
+
+                    Smoothies
+
+                </div>
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Varian','Jus',this)">
+
+                    Jus
+
+                </div>
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Varian','Hot',this)">
+
+                    Hot
+
+                </div>
+
+            </div>
+
+
+            <h3>
+                Topping
+            </h3>
+
+            <div
+                class="option-group"
+                id="optTopping">
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Topping','Susu',this)">
+
+                    Susu
+
+                </div>
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Topping','Boba',this)">
+
+                    Boba
+
+                </div>
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Topping','Cookies',this)">
+
+                    Cookies
+
+                </div>
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Topping','Default',this)">
+
+                    Default
+
+                </div>
+
+            </div>
+
+
+            <h3>
+                Nama Produk
+            </h3>
+
+            <input
+                id="minumNama"
+                placeholder="Nama Produk">
+
+
+            <h3>
+                Ukuran
+            </h3>
+
+            <div
+                class="option-group"
+                id="optUkuran">
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Ukuran','Besar',this)">
+
+                    Besar
+
+                </div>
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Ukuran','Kecil',this)">
+
+                    Kecil
+
+                </div>
+
+                <div
+                    class="option-item"
+                    onclick="setOpt('Ukuran','Default',this)">
+
+                    Default
+
+                </div>
+
+            </div>
+
+
+            <h3>
+                Harga
+            </h3>
+
+            <input
+                id="minumHarga">
+
+
+            <button
+                onclick="simpanMinuman()">
+
+                Simpan Produk
+
+            </button>
+
+
+            <div class="table-container">
+
+                <table
+                    id="tblMinuman">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Kode</th>
+
+                        <th>Varian</th>
+
+                        <th>Nama</th>
+
+                        <th>Topping</th>
+
+                        <th>Ukuran</th>
+
+                        <th>Harga</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        </section>
+
+
+        <!-- ====================================== -->
+        <!-- OPERASIONAL -->
+        <!-- ====================================== -->
+
+        <section
+            id="secOperasional"
+            class="hidden">
+
+            <h3>
+                Nama Biaya
+            </h3>
+
+            <input
+                id="opNama"
+                autocomplete="off">
+
+            <div
+                id="opRekomendasi">
+
+            </div>
+
+
+            <h3>
+                Keterangan
+            </h3>
+
+            <input
+                id="opKeterangan">
+
+
+            <h3>
+                Biaya
+            </h3>
+
+            <input
+                id="opBiaya">
+
+
+            <button
+                onclick="simpanOperasional()">
+
+                Simpan Operasional
+
+            </button>
+
+
+            <div
+                class="table-container">
+
+                <table
+                    id="tblOperasional">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Nama</th>
+
+                        <th>Keterangan</th>
+
+                        <th>Biaya</th>
+
+                        <th>Waktu</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+<script>
+
+// ======================================================
+// MANAJEMEN TAMBI
+// PART A
+// FOUNDATION
+// ======================================================
+
+
+// ======================================================
+// STATE
+// ======================================================
+
+let supplyData = [];
+let makananData = [];
+let konversiData = [];
+let minumanData = [];
+let operasionalData = [];
+
+let supplierList = [];
+
+let minumanForm = {
+    varian: "",
+    topping: "",
+    ukuran: ""
+};
+
+
+// ======================================================
+// SHORTCUT
+// ======================================================
+
+const $ = (selector) =>
+    document.querySelector(selector);
+
+const $$ = (selector) =>
+    document.querySelectorAll(selector);
+
+
+// ======================================================
+// EMPTY TABLE
+// ======================================================
+
+function renderEmptyTable(
+    tbody,
+    colspan
+){
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="${colspan}">
+                Tidak ada data
+            </td>
+        </tr>
+    `;
+
+}
+
+
+// ======================================================
+// TOAST WRAPPER
+// ======================================================
+
+function toast(msg){
+
+    if(
+        typeof showToast ===
+        "function"
+    ){
+
+        showToast(msg);
+
+    }
+
+    else{
+
+        alert(msg);
+
+    }
+
+}
+
+
+// ======================================================
+// LOADING WRAPPER
+// ======================================================
+
+function loadingOn(){
+
+    if(
+        typeof showLoading ===
+        "function"
+    ){
+
+        showLoading();
+
+    }
+
+}
+
+function loadingOff(){
+
+    if(
+        typeof hideLoading ===
+        "function"
+    ){
+
+        hideLoading();
+
+    }
+
+}
+
+
+// ======================================================
+// MAIN TAB
+// ======================================================
+
+function switchMain(tab){
+
+    [
+        "#secSupply",
+        "#secMakanan",
+        "#secMinuman",
+        "#secOperasional"
+    ]
+    .forEach(id => {
+
+        $(id)
+        ?.classList
+        .add("hidden");
+
+    });
+
+    [
+        "#tabSupply",
+        "#tabMakanan",
+        "#tabMinuman",
+        "#tabOperasional"
+    ]
+    .forEach(id => {
+
+        $(id)
+        ?.classList
+        .remove("active");
+
+    });
+
+    if(tab === "supply"){
+
+        $("#secSupply")
+        ?.classList
+        .remove("hidden");
+
+        $("#tabSupply")
+        ?.classList
+        .add("active");
+
+    }
+
+    if(tab === "makanan"){
+
+        $("#secMakanan")
+        ?.classList
+        .remove("hidden");
+
+        $("#tabMakanan")
+        ?.classList
+        .add("active");
+
+    }
+
+    if(tab === "minuman"){
+
+        $("#secMinuman")
+        ?.classList
+        .remove("hidden");
+
+        $("#tabMinuman")
+        ?.classList
+        .add("active");
+
+    }
+
+    if(tab === "operasional"){
+
+        $("#secOperasional")
+        ?.classList
+        .remove("hidden");
+
+        $("#tabOperasional")
+        ?.classList
+        .add("active");
+
+    }
+
+}
+
+
+// ======================================================
+// SUB TAB MAKANAN
+// ======================================================
+
+function switchMakanan(mode){
+
+    $("#secBal")
+    ?.classList
+    .toggle(
+        "hidden",
+        mode !== "bal"
+    );
+
+    $("#secPack")
+    ?.classList
+    .toggle(
+        "hidden",
+        mode !== "pack"
+    );
+
+    $("#subBal")
+    ?.classList
+    .toggle(
+        "active",
+        mode === "bal"
+    );
+
+    $("#subPack")
+    ?.classList
+    .toggle(
+        "active",
+        mode === "pack"
+    );
+
+}
+
+
+// ======================================================
+// SUB TAB MINUMAN
+// ======================================================
+
+function switchMinuman(mode){
+
+    $("#secSupplyMinuman")
+    ?.classList
+    .toggle(
+        "hidden",
+        mode !== "supply"
+    );
+
+    $("#secProdukMinuman")
+    ?.classList
+    .toggle(
+        "hidden",
+        mode !== "produk"
+    );
+
+    $("#tabSupplyMinuman")
+    ?.classList
+    .toggle(
+        "active",
+        mode === "supply"
+    );
+
+    $("#tabProdukMinuman")
+    ?.classList
+    .toggle(
+        "active",
+        mode === "produk"
+    );
+
+}
+
+
+// ======================================================
+// TABEL MAKANAN
+// ======================================================
+
+function switchTabelMakanan(type){
+
+    $("#tblBalBox")
+    ?.classList
+    .toggle(
+        "hidden",
+        type !== "bal"
+    );
+
+    $("#tblPackBox")
+    ?.classList
+    .toggle(
+        "hidden",
+        type !== "pack"
+    );
+
+    $("#tblBalBtn")
+    ?.classList
+    .toggle(
+        "active",
+        type === "bal"
+    );
+
+    $("#tblPackBtn")
+    ?.classList
+    .toggle(
+        "active",
+        type === "pack"
+    );
+
+}
+
+
+// ======================================================
+// RETURN BOX
+// ======================================================
+
+function toggleReturn(){
+
+    $("#returnBox")
+    ?.classList
+    .toggle("hidden");
+
+}
+
+
+// ======================================================
+// OPTION BUTTON
+// ======================================================
+
+function setOpt(
+    key,
+    value,
+    element
+){
+
+    element
+    .parentElement
+    .querySelectorAll(
+        ".option-item"
+    )
+    .forEach(btn => {
+
+        btn.classList.remove(
+            "active"
+        );
+
+    });
+
+    element.classList.add(
+        "active"
+    );
+
+    minumanForm[
+        key.toLowerCase()
+    ] = value;
+
+}
+
+
+// ======================================================
+// STARTUP
+// ======================================================
+
+window.addEventListener(
+    "load",
+    () => {
+
+        switchMain(
+            "supply"
+        );
+
+        switchMakanan(
+            "bal"
+        );
+
+        switchMinuman(
+            "supply"
+        );
+
+    }
+);
+
+// ======================================================
+// PART B
+// SUPPLY + RETURN
+// ======================================================
+
+
+// ======================================================
+// HITUNG SUBTOTAL
+// ======================================================
+
+function hitungSubtotal(){
+
+    let totalQty = 0;
+    let totalModal = 0;
+
+    $$(".supQty").forEach(el => {
+
+        totalQty +=
+            Number(
+                el.value
+            ) || 0;
+
+    });
+
+    $$(".supModal").forEach(el => {
+
+        totalModal +=
+            parseRupiah(
+                el.value
+            ) || 0;
+
+    });
+
+    $("#subtotalQty").value =
+        totalQty;
+
+    $("#subtotalModal").value =
+        formatRupiah(
+            totalModal
+        );
+
+}
+
+
+// ======================================================
+// TAMBAH BARIS SUPPLY
+// ======================================================
+
+function tambahBarisSupply(){
+
+    const row =
+        document.createElement(
+            "div"
+        );
+
+    row.className =
+        "item-row";
+
+    row.innerHTML = `
+
+        <input
+            class="supNama"
+            placeholder="Nama Barang">
+
+        <input
+            class="supQty"
+            placeholder="Qty">
+
+        <input
+            class="supBerat"
+            placeholder="Berat">
+
+        <input
+            class="supModal"
+            placeholder="Modal">
+
+        <button
+            type="button"
+            class="item-remove">
+
+            ×
+
+        </button>
+
+    `;
+
+    row
+    .querySelector(
+        ".item-remove"
+    )
+    .onclick = () => {
+
+        row.remove();
+
+        hitungSubtotal();
+
+    };
+
+    row
+    .querySelectorAll(
+        ".supQty,.supModal"
+    )
+    .forEach(el => {
+
+        el.addEventListener(
+            "input",
+            hitungSubtotal
+        );
+
+    });
+
+    $("#supplyItems")
+    .appendChild(row);
+
+}
+
+
+// ======================================================
+// RESET SUPPLY
+// ======================================================
+
+function resetSupplyForm(){
+
+    $("#supplySupplier").value =
+        "";
+
+    $("#supplyItems").innerHTML =
+        "";
+
+    tambahBarisSupply();
+
+    $("#subtotalQty").value =
+        "";
+
+    $("#subtotalModal").value =
+        "";
+
+}
+
+
+// ======================================================
+// SIMPAN SUPPLY
+// ======================================================
+
+async function simpanSupply(){
+
+    const supplier =
+        $("#supplySupplier")
+        ?.value
+        ?.trim();
+
+    if(!supplier){
+
+        toast(
+            "Supplier wajib diisi"
+        );
+
+        return;
+    }
+
+    const items = [];
+
+    $$("#supplyItems .item-row")
+    .forEach(row => {
+
+        const nama =
+            row.querySelector(
+                ".supNama"
+            ).value;
+
+        const qty =
+            Number(
+                row.querySelector(
+                    ".supQty"
+                ).value
+            ) || 0;
+
+        const berat =
+            row.querySelector(
+                ".supBerat"
+            ).value
+            || "Default";
+
+        const modal =
+            parseRupiah(
+                row.querySelector(
+                    ".supModal"
+                ).value
+            );
+
+        if(!nama)
+            return;
+
+        items.push({
+
+            nama,
+            qty,
+            berat,
+            modal
+
+        });
+
+    });
+
+    if(
+        items.length === 0
+    ){
+
+        toast(
+            "Belum ada barang"
+        );
+
+        return;
+    }
+
+    loadingOn();
+
+    try{
+
+        const res =
+            await apiPost({
+
+                action:
+                "tambah_supply",
+
+                supplier,
+
+                items
+
+            });
+
+        toast(
+            res.message ||
+            "Supply berhasil"
+        );
+
+        resetSupplyForm();
+
+        if(
+            typeof loadSemuaData ===
+            "function"
+        ){
+
+            await loadSemuaData();
+
+        }
+
+    }
+
+    catch(err){
+
+        console.error(
+            "SUPPLY ERROR:",
+            err
+        );
+
+        toast(
+            JSON.stringify(err)
+        );
+
+    }
+
+    loadingOff();
+
+}
+
+
+// ======================================================
+// RESET RETURN
+// ======================================================
+
+function resetReturnForm(){
+
+    $("#returnSupplier").value =
+        "";
+
+    $("#returnBarang").value =
+        "";
+
+    $("#returnBerat").value =
+        "";
+
+    $("#returnQty").value =
+        "";
+
+    $("#returnAlasan").value =
+        "";
+
+}
+
+
+// ======================================================
+// SIMPAN RETURN
+// ======================================================
+
+async function simpanReturn(){
+
+    const supplier =
+        $("#returnSupplier")
+        ?.value
+        ?.trim();
+
+    const barang =
+        $("#returnBarang")
+        ?.value
+        ?.trim();
+
+    const berat =
+        $("#returnBerat")
+        ?.value
+        ?.trim();
+
+    const qty =
+        Number(
+            $("#returnQty")
+            ?.value
+        ) || 0;
+
+    const alasan =
+        $("#returnAlasan")
+        ?.value
+        ?.trim();
+
+    if(
+        !supplier ||
+        !barang
+    ){
+
+        toast(
+            "Data return belum lengkap"
+        );
+
+        return;
+    }
+
+    loadingOn();
+
+    try{
+
+        const res =
+            await apiPost({
+
+                action:
+                "tambah_return",
+
+                supplier,
+
+                barang,
+
+                berat,
+
+                qty,
+
+                alasan
+
+            });
+
+        toast(
+            res.message ||
+            "Return berhasil"
+        );
+
+        resetReturnForm();
+
+        if(
+            typeof loadSemuaData ===
+            "function"
+        ){
+
+            await loadSemuaData();
+
+        }
+
+    }
+
+    catch(err){
+
+        console.error(
+            err
+        );
+
+        toast(
+            "Gagal simpan return"
+        );
+
+    }
+
+    loadingOff();
+
+}
+
+
+// ======================================================
+// FORMAT RUPIAH SUPPLY
+// ======================================================
+
+document.addEventListener(
+    "input",
+    e => {
+
+        if(
+            e.target.classList
+            .contains(
+                "supModal"
+            )
+        ){
+
+            e.target.value =
+                formatRupiah(
+                    parseRupiah(
+                        e.target.value
+                    )
+                );
+
+        }
+
+    }
+);
+
+// ======================================================
+// PART C1
+// MAKANAN BAL
+// DROPDOWN SESSION SUPPLY
+// ======================================================
+
+
+// ======================================================
+// LOAD SUPPLIER LIST
+// ======================================================
+
+async function loadSupplierList(){
+
+    try{
+
+        const data =
+            await apiGet(
+                "get_supply_supplier"
+            );
+
+        supplierList =
+            data.data || [];
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+
+// ======================================================
+// FILTER SUPPLIER
+// ======================================================
+
+function cariSupplierBal(){
+
+    const keyword =
+        $("#balSupplier")
+        .value
+        .toLowerCase();
+
+    const box =
+        $("#balSupplierResult");
+
+    box.innerHTML = "";
+
+    supplierList
+    .filter(item =>
+
+        item
+        .toLowerCase()
+        .includes(keyword)
+
+    )
+    .forEach(item => {
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+        div.className =
+            "search-item";
+
+        div.textContent =
+            item;
+
+        ddiv.onclick = async () => {
+
+            $("#balSupplier").value =
+                item;
+
+            box.innerHTML = "";
+
+            await loadSessionSupply();
+
+        };
+
+        box.appendChild(
+            div
+        );
+
+    });
+
+}
+
+async function loadSessionSupply(){
+
+    const supplier =
+        $("#balSupplier")
+        .value
+        .trim();
+
+    if(!supplier)
+        return;
+
+    try{
+
+        const res =
+            await apiGet(
+                "get_supply_session_list",
+                {
+                    supplier
+                }
+            );
+
+        const select =
+            $("#balSession");
+
+        select.innerHTML =
+            `
+            <option value="">
+                Pilih Session Supply
+            </option>
+            `;
+
+        (res.data || [])
+        .forEach(item => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                JSON.stringify(item);
+
+            option.textContent =
+                item.label;
+
+            select.appendChild(
+                option
+            );
+
+        });
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+
+// ======================================================
+// AMBIL SESSION SUPPLY
+// ======================================================
+
+async function ambilSupplySession(){
+
+    const session =
+        $("#balSession")
+        .value;
+
+    if(!session){
+
+        toast(
+            "Pilih session supply"
+        );
+
+        return;
+
+    }
+
+    const data =
+        JSON.parse(
+            session
+        );
+
+    try{
+
+        const res =
+            await apiGet(
+                "get_supply_items",
+                {
+                    supplier:
+                        data.supplier,
+
+                    tanggal:
+                        data.tanggal,
+
+                    jam:
+                        data.jam
+                }
+            );
+
+        renderSupplySession(
+            res.data || []
+        );
+
+        toast(
+            "Barang berhasil dimuat"
+        );
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+        toast(
+            "Gagal memuat barang"
+        );
+
+    }
+
+}
+
+
+// ======================================================
+// RENDER SESSION
+// ======================================================
+
+function renderSupplySession(items){
+
+    const wrap =
+        $("#balItems");
+
+    wrap.innerHTML =
+        "";
+
+    items.forEach(item => {
+
+        tambahBarisBal(
+            item
+        );
+
+    });
+
+}
+
+
+// ======================================================
+// INIT SUPPLY
+// ======================================================
+
+window.addEventListener(
+    "load",
+    async () => {
+
+        if(
+            $("#supplyItems")
+        ){
+
+            tambahBarisSupply();
+
+        }
+
+        // =====================
+        // MAKANAN BAL
+        // =====================
+
+        await loadSupplierList();
+
+        $("#balSupplier")
+        ?.addEventListener(
+            "input",
+            cariSupplierBal
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>

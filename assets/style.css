@@ -1,0 +1,1293 @@
+/* =======================================================
+   TAMBI SYSTEM
+   STYLE.CSS PART 1
+   RESET + LAYOUT + FORM
+======================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+
+    --primary: #4caf50;
+
+    --primary-dark: #388e3c;
+
+    --secondary: #f5f5f5;
+
+    --border: #dcdcdc;
+
+    --text: #333;
+
+    --danger: #e53935;
+
+    --warning: #ff9800;
+
+    --radius: 12px;
+
+}
+
+body {
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f4f6f8;
+
+    color: var(--text);
+
+    min-height: 100vh;
+
+    padding: 15px;
+
+}
+
+
+/* =======================================================
+   CONTAINER
+======================================================= */
+
+.container {
+
+    max-width: 1200px;
+
+    margin: auto;
+
+}
+
+.container-2 {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 15px;
+
+}
+
+.isian {
+
+    background: white;
+
+    border-radius: var(--radius);
+
+    padding: 16px;
+
+    box-shadow:
+        0 2px 8px
+        rgba(0,0,0,.08);
+
+}
+
+
+/* =======================================================
+   TYPOGRAPHY
+======================================================= */
+
+h1 {
+
+    font-size: 24px;
+
+    margin-bottom: 10px;
+
+}
+
+h2 {
+
+    font-size: 20px;
+
+    margin-bottom: 10px;
+
+}
+
+h3 {
+
+    font-size: 14px;
+
+    margin-top: 12px;
+
+    margin-bottom: 5px;
+
+}
+
+small {
+
+    color: #666;
+
+}
+
+
+/* =======================================================
+   INPUT
+======================================================= */
+
+input,
+select,
+textarea {
+
+    width: 100%;
+
+    padding: 10px 12px;
+
+    border:
+
+        1px solid
+        var(--border);
+
+    border-radius:
+        var(--radius);
+
+    outline: none;
+
+    transition: .2s;
+
+    font-size: 14px;
+
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+
+    border-color:
+        var(--primary);
+
+}
+
+
+/* =======================================================
+   BUTTON
+======================================================= */
+
+button {
+
+    width: 100%;
+
+    border: none;
+
+    padding: 12px;
+
+    margin-top: 10px;
+
+    cursor: pointer;
+
+    border-radius:
+        var(--radius);
+
+    background:
+        var(--primary);
+
+    color: white;
+
+    font-weight: bold;
+
+    transition: .2s;
+
+}
+
+button:hover {
+
+    background:
+        var(--primary-dark);
+
+}
+
+.btn-back {
+
+    width: auto;
+
+    padding:
+        10px 16px;
+
+    margin: 0;
+
+}
+
+.btn-danger {
+
+    background:
+        var(--danger);
+
+}
+
+.btn-warning {
+
+    background:
+        var(--warning);
+
+}
+
+
+/* =======================================================
+   FORM ROW
+======================================================= */
+
+.form-row {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-bottom: 10px;
+
+}
+
+.form-row > * {
+
+    flex: 1;
+
+}
+
+
+/* =======================================================
+   MULTI INPUT
+======================================================= */
+
+.item-row {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-bottom: 8px;
+
+}
+
+.item-row input {
+
+    margin: 0;
+
+}
+
+.item-remove {
+
+    width: 42px;
+
+    flex-shrink: 0;
+
+}
+
+/* =======================================================
+   TAMBI SYSTEM
+   STYLE.CSS PART 2
+   SWITCH + SEARCH + CARD + DROPDOWN
+======================================================= */
+
+
+/* =======================================================
+   SWITCH
+======================================================= */
+
+.switch-container {
+
+    display: flex;
+
+    gap: 6px;
+
+    background: #eeeeee;
+
+    padding: 4px;
+
+    border-radius: var(--radius);
+
+    margin-bottom: 15px;
+
+    overflow-x: auto;
+
+}
+
+.switch-btn {
+
+    flex: 1;
+
+    text-align: center;
+
+    padding: 10px;
+
+    cursor: pointer;
+
+    border-radius: 10px;
+
+    white-space: nowrap;
+
+    transition: .2s;
+
+}
+
+.switch-btn.active {
+
+    background: white;
+
+    font-weight: bold;
+
+    box-shadow:
+        0 1px 4px
+        rgba(0,0,0,.12);
+
+}
+
+
+/* =======================================================
+   SEARCH
+======================================================= */
+
+.search-container {
+
+    position: relative;
+
+    margin-bottom: 12px;
+
+}
+
+.search-result {
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    top: 100%;
+
+    z-index: 50;
+
+    background: white;
+
+    border:
+
+        1px solid
+        var(--border);
+
+    border-radius:
+        var(--radius);
+
+    overflow: hidden;
+
+    box-shadow:
+        0 4px 12px
+        rgba(0,0,0,.12);
+
+    max-height: 250px;
+
+    overflow-y: auto;
+
+}
+
+.search-item {
+
+    padding: 10px;
+
+    cursor: pointer;
+
+    border-bottom:
+
+        1px solid
+        #f0f0f0;
+
+}
+
+.search-item:hover {
+
+    background:
+        #f7f7f7;
+
+}
+
+
+/* =======================================================
+   CUSTOM DROPDOWN
+======================================================= */
+
+.dropdown {
+
+    position: relative;
+
+}
+
+.dropdown-list {
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    top: calc(100% + 4px);
+
+    background: white;
+
+    border:
+
+        1px solid
+        var(--border);
+
+    border-radius:
+        var(--radius);
+
+    max-height: 250px;
+
+    overflow-y: auto;
+
+    z-index: 100;
+
+    box-shadow:
+        0 4px 12px
+        rgba(0,0,0,.12);
+
+}
+
+.dropdown-item {
+
+    padding: 10px;
+
+    cursor: pointer;
+
+}
+
+.dropdown-item:hover {
+
+    background:
+        #f5f5f5;
+
+}
+
+
+/* =======================================================
+   OPTION GROUP
+======================================================= */
+
+.option-group {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 10px;
+
+}
+
+.option-item {
+
+    padding:
+        10px 14px;
+
+    border:
+
+        1px solid
+        var(--border);
+
+    border-radius:
+        var(--radius);
+
+    cursor: pointer;
+
+    transition: .2s;
+
+}
+
+.option-item.active {
+
+    background:
+        var(--primary);
+
+    color: white;
+
+    border-color:
+        var(--primary);
+
+}
+
+
+/* =======================================================
+   CARD CONTAINER
+======================================================= */
+
+.card-container {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(
+                220px,
+                1fr
+            )
+        );
+
+    gap: 12px;
+
+}
+
+
+/* =======================================================
+   PRODUCT CARD
+======================================================= */
+
+.product-card {
+
+    background: white;
+
+    border-radius:
+        var(--radius);
+
+    border:
+
+        1px solid
+        var(--border);
+
+    padding: 12px;
+
+    cursor: pointer;
+
+    transition: .2s;
+
+}
+
+.product-card:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 4px 12px
+        rgba(0,0,0,.10);
+
+}
+
+.product-name {
+
+    font-weight: bold;
+
+    margin-bottom: 6px;
+
+}
+
+.product-price {
+
+    color:
+        var(--primary-dark);
+
+    font-weight: bold;
+
+    margin-bottom: 4px;
+
+}
+
+.product-stock {
+
+    color: #777;
+
+    font-size: 13px;
+
+}
+
+
+/* =======================================================
+   SECTION HEADER
+======================================================= */
+
+.section-header {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    margin-top: 20px;
+
+    margin-bottom: 10px;
+
+}
+
+.sub-header {
+
+    background: #f0f0f0;
+
+    padding:
+        8px 12px;
+
+    border-radius:
+        var(--radius);
+
+    font-weight: bold;
+
+    margin-top: 12px;
+
+    margin-bottom: 8px;
+
+}
+
+
+/* =======================================================
+   CART
+======================================================= */
+
+.cart {
+
+    margin-top: 15px;
+
+}
+
+.cart-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px;
+
+    background: #fafafa;
+
+    border:
+
+        1px solid
+        var(--border);
+
+    border-radius:
+        var(--radius);
+
+    margin-bottom: 8px;
+
+}
+
+.cart-info {
+
+    flex: 1;
+
+}
+
+.cart-name {
+
+    font-weight: bold;
+
+}
+
+.cart-price {
+
+    font-size: 13px;
+
+    color: #666;
+
+}
+
+
+/* =======================================================
+   CART QTY
+======================================================= */
+
+.qty-box {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+}
+
+.qty-btn {
+
+    width: 34px;
+
+    height: 34px;
+
+    margin: 0;
+
+    padding: 0;
+
+}
+
+.qty-number {
+
+    min-width: 24px;
+
+    text-align: center;
+
+    font-weight: bold;
+
+}
+
+
+/* =======================================================
+   SUMMARY CARD
+======================================================= */
+
+.summary-card {
+
+    background: white;
+
+    border-radius:
+        var(--radius);
+
+    padding: 14px;
+
+    border:
+
+        1px solid
+        var(--border);
+
+    margin-top: 12px;
+
+}
+
+.summary-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+
+}
+
+.summary-total {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+}
+
+/* =======================================================
+   TAMBI SYSTEM
+   STYLE.CSS PART 3
+   TABLE + TOAST + MOBILE + UTILITIES
+======================================================= */
+
+
+/* =======================================================
+   TABLE
+======================================================= */
+
+.table-container {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    margin-top: 12px;
+
+}
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: white;
+
+}
+
+thead {
+
+    background: var(--primary);
+
+    color: white;
+
+}
+
+th,
+td {
+
+    padding: 10px;
+
+    text-align: left;
+
+    border-bottom:
+        1px solid
+        #eeeeee;
+
+    white-space: nowrap;
+
+}
+
+tbody tr:hover {
+
+    background:
+        #fafafa;
+
+}
+
+
+/* =======================================================
+   EMPTY STATE
+======================================================= */
+
+.empty-state {
+
+    text-align: center;
+
+    padding: 20px;
+
+    color: #777;
+
+}
+
+
+/* =======================================================
+   TOAST
+======================================================= */
+
+.toast {
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 20px;
+
+    transform:
+        translateX(-50%)
+        translateY(100px);
+
+    background: #222;
+
+    color: white;
+
+    padding:
+        12px 18px;
+
+    border-radius:
+        var(--radius);
+
+    z-index: 9999;
+
+    opacity: 0;
+
+    transition: .3s;
+
+    box-shadow:
+        0 4px 12px
+        rgba(0,0,0,.2);
+
+}
+
+.toast.show {
+
+    opacity: 1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+
+}
+
+
+/* =======================================================
+   LOADING
+======================================================= */
+
+#loading {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .8
+        );
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    z-index: 9998;
+
+}
+
+
+/* =======================================================
+   RECOMMENDATION LIST
+======================================================= */
+
+.recommend-box {
+
+    position: relative;
+
+}
+
+.recommend-list {
+
+    position: absolute;
+
+    top: calc(100% + 4px);
+
+    left: 0;
+
+    right: 0;
+
+    background: white;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius:
+        var(--radius);
+
+    max-height: 240px;
+
+    overflow-y: auto;
+
+    z-index: 100;
+
+    box-shadow:
+        0 4px 12px
+        rgba(0,0,0,.12);
+
+}
+
+.recommend-item {
+
+    padding: 10px;
+
+    cursor: pointer;
+
+}
+
+.recommend-item:hover {
+
+    background:
+        #f5f5f5;
+
+}
+
+
+/* =======================================================
+   TAG ITEM
+======================================================= */
+
+.tag-list {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-top: 8px;
+
+}
+
+.tag {
+
+    background:
+        #eeeeee;
+
+    padding:
+        6px 10px;
+
+    border-radius:
+        999px;
+
+    font-size: 13px;
+
+}
+
+.tag-remove {
+
+    cursor: pointer;
+
+    margin-left: 6px;
+
+    font-weight: bold;
+
+}
+
+
+/* =======================================================
+   DASHBOARD CARD
+======================================================= */
+
+.dashboard-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                200px,
+                1fr
+            )
+        );
+
+    gap: 12px;
+
+}
+
+.dashboard-card {
+
+    background: white;
+
+    border-radius:
+        var(--radius);
+
+    padding: 16px;
+
+    border:
+        1px solid
+        var(--border);
+
+}
+
+.dashboard-title {
+
+    color: #777;
+
+    margin-bottom: 6px;
+
+}
+
+.dashboard-value {
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+}
+
+
+/* =======================================================
+   ABSENSI STATUS
+======================================================= */
+
+.status-hadir {
+
+    color: #2e7d32;
+
+    font-weight: bold;
+
+}
+
+.status-tidak-hadir {
+
+    color: #c62828;
+
+    font-weight: bold;
+
+}
+
+
+/* =======================================================
+   MODAL
+======================================================= */
+
+.modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(
+            0,
+            0,
+            0,
+            .4
+        );
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 9999;
+
+}
+
+.modal-content {
+
+    background: white;
+
+    width: 95%;
+
+    max-width: 600px;
+
+    border-radius:
+        var(--radius);
+
+    padding: 16px;
+
+}
+
+
+/* =======================================================
+   UTILITIES
+======================================================= */
+
+.hidden {
+
+    display: none !important;
+
+}
+
+.text-center {
+
+    text-align: center;
+
+}
+
+.text-right {
+
+    text-align: right;
+
+}
+
+.mt-10 {
+
+    margin-top: 10px;
+
+}
+
+.mt-20 {
+
+    margin-top: 20px;
+
+}
+
+.mb-10 {
+
+    margin-bottom: 10px;
+
+}
+
+.mb-20 {
+
+    margin-bottom: 20px;
+
+}
+
+.w-100 {
+
+    width: 100%;
+
+}
+
+
+/* =======================================================
+   MOBILE
+======================================================= */
+
+@media (max-width: 768px) {
+
+    body {
+
+        padding: 10px;
+
+    }
+
+    .container-2 {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .form-row {
+
+        flex-direction: column;
+
+    }
+
+    .item-row {
+
+        flex-direction: column;
+
+    }
+
+    .item-remove {
+
+        width: 100%;
+
+    }
+
+    .cart-item {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .qty-box {
+
+        justify-content: center;
+
+    }
+
+    .dashboard-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    h1 {
+
+        font-size: 20px;
+
+    }
+
+    table {
+
+        font-size: 13px;
+
+    }
+
+}
+
+
+/* =======================================================
+   SMALL MOBILE
+======================================================= */
+
+@media (max-width: 480px) {
+
+    .product-card {
+
+        padding: 10px;
+
+    }
+
+    .switch-btn {
+
+        padding: 8px;
+
+        font-size: 13px;
+
+    }
+
+    button {
+
+        padding: 10px;
+
+    }
+
+}

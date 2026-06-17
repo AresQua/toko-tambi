@@ -218,8 +218,7 @@
             <div
                 class="table-container">
 
-                <table
-                    id="tblSupply">
+                <table>
 
                     <thead>
 
@@ -243,7 +242,7 @@
 
                     </thead>
 
-                    <tbody>
+                    <tbody id="tblSupply">
 
                     </tbody>
 
@@ -356,29 +355,6 @@
             </button>
 
 
-            <div class="switch-container mt-20">
-
-                <div
-                    id="tblBalBtn"
-                    class="switch-btn active"
-                    onclick="switchTabelMakanan('bal')">
-
-                    Database Bal
-
-                </div>
-
-                <div
-                    id="tblPackBtn"
-                    class="switch-btn"
-                    onclick="switchTabelMakanan('pack')">
-
-                    Database Pack
-
-                </div>
-
-            </div>
-
-
             <div
                 id="tblBalBox">
 
@@ -451,8 +427,7 @@
 
 
             <div
-                id="tblPackBox"
-                class="hidden">
+                id="tblPackBox">
 
                 <div class="table-container">
 
@@ -909,6 +884,55 @@ let minumanForm = {
     ukuran: ""
 };
 
+// ======================================================
+// LOAD DATABASE
+// ======================================================
+
+async function loadSemuaData(){
+
+    try{
+
+        makananData =
+            await apiGet(
+                "makanan"
+            );
+
+        konversiData =
+            await apiGet(
+                "konversi"
+            );
+
+        minumanData =
+            await apiGet(
+                "minuman"
+            );
+
+        operasionalData =
+            await apiGet(
+                "operasional"
+            );
+
+        console.log(
+            "Makanan:",
+            makananData
+        );
+
+        renderMakananBal();
+        renderMakananPack();
+
+    }
+
+    catch(err){
+
+        console.error(
+            "LOAD DATA ERROR",
+            err
+        );
+
+    }
+
+}
+
 
 // ======================================================
 // SHORTCUT
@@ -1115,6 +1139,12 @@ function switchMakanan(mode){
         mode === "pack"
     );
 
+    if(mode === "pack"){
+
+        loadSemuaData();
+
+    }
+
 }
 
 
@@ -1150,43 +1180,6 @@ function switchMinuman(mode){
     .toggle(
         "active",
         mode === "produk"
-    );
-
-}
-
-
-// ======================================================
-// TABEL MAKANAN
-// ======================================================
-
-function switchTabelMakanan(type){
-
-    $("#tblBalBox")
-    ?.classList
-    .toggle(
-        "hidden",
-        type !== "bal"
-    );
-
-    $("#tblPackBox")
-    ?.classList
-    .toggle(
-        "hidden",
-        type !== "pack"
-    );
-
-    $("#tblBalBtn")
-    ?.classList
-    .toggle(
-        "active",
-        type === "bal"
-    );
-
-    $("#tblPackBtn")
-    ?.classList
-    .toggle(
-        "active",
-        type === "pack"
     );
 
 }
@@ -1245,19 +1238,15 @@ function setOpt(
 
 window.addEventListener(
     "load",
-    () => {
+    async () => {
 
-        switchMain(
-            "supply"
-        );
+        switchMain("supply");
+        switchMakanan("bal");
+        switchMinuman("supply");
 
-        switchMakanan(
-            "bal"
-        );
+        await loadSemuaData();
 
-        switchMinuman(
-            "supply"
-        );
+        await loadSupplyTable();
 
     }
 );
@@ -1507,6 +1496,8 @@ async function simpanSupply(){
 
             await loadSemuaData();
 
+            await loadSupplyTable();
+
         }
 
     }
@@ -1526,6 +1517,31 @@ async function simpanSupply(){
 
     loadingOff();
 
+}
+
+
+async function loadSupplyTable() {
+    const data = await apiGet("supply");
+
+    const tbody = document.getElementById("tblSupply");
+
+    tbody.innerHTML = "";
+
+    data.forEach(row => {
+        tbody.innerHTML += `
+        <tr>
+            <td>${row[0] || "-"}</td>
+            <td>${row[1] || "-"}</td>
+            <td>${row[2] || 0}</td>
+            <td>${row[3] || 0}</td>
+            <td>${formatRupiah(row[4] || 0)}</td>
+            <td>${row[5] || "-"}</td>
+            <td>${row[6] || "-"}</td>
+        </tr>
+        `;
+    });
+
+    
 }
 
 
@@ -1698,11 +1714,11 @@ async function loadSupplierList(){
 
         const data =
             await apiGet(
-                "get_supply_supplier"
+                "supplier_list"
             );
 
         supplierList =
-            data.data || [];
+            data || [];
 
     }
 
@@ -1752,7 +1768,7 @@ function cariSupplierBal(){
         div.textContent =
             item;
 
-        ddiv.onclick = async () => {
+        div.onclick = async () => {
 
             $("#balSupplier").value =
                 item;
@@ -1874,6 +1890,9 @@ async function ambilSupplySession(){
                 }
             );
 
+            console.log(res);
+            console.log(res.data);
+
         renderSupplySession(
             res.data || []
         );
@@ -1950,6 +1969,442 @@ window.addEventListener(
 
     }
 );
+
+// ======================================================
+// PART C2
+// MAKANAN BAL
+// FORM PRODUK BAL
+// ======================================================
+
+
+// ======================================================
+// TAMBAH BARIS BAL
+// ======================================================
+
+function tambahBarisBal(data = {}){
+
+    const row =
+        document.createElement(
+            "div"
+        );
+
+    row.className =
+        "item-row";
+
+    row.innerHTML = `
+
+        <input
+            class="balNama"
+            placeholder="Nama Produk"
+            value="${data.nama || data.barang || ""}">
+
+        <input
+            class="balBerat"
+            placeholder="Berat"
+            value="${data.berat || "Default"}">
+
+        <input
+            class="balQty"
+            placeholder="Qty"
+            value="${data.qty || 0}">
+
+        <input
+            class="balHarga"
+            placeholder="Harga Jual">
+
+        <button
+            type="button"
+            class="item-remove">
+
+            ×
+
+        </button>
+
+    `;
+
+    row
+    .querySelector(
+        ".item-remove"
+    )
+    .onclick = () => {
+
+        row.remove();
+
+    };
+
+    $("#balItems")
+    .appendChild(
+        row
+    );
+
+}
+
+// ======================================================
+// SIMPAN PRODUK BAL
+// ======================================================
+
+async function simpanBal(){
+
+    const items = [];
+
+    $$("#balItems .item-row")
+    .forEach(row => {
+
+        const nama =
+            row.querySelector(
+                ".balNama"
+            ).value.trim();
+
+        const berat =
+            row.querySelector(
+                ".balBerat"
+            ).value.trim() ||
+            "Default";
+
+        const qty =
+            Number(
+                row.querySelector(
+                    ".balQty"
+                ).value
+            ) || 0;
+
+        const harga =
+            parseRupiah(
+                row.querySelector(
+                    ".balHarga"
+                ).value
+            );
+
+        if(!nama)
+            return;
+
+        items.push({
+
+            nama,
+            berat,
+            qty,
+            harga
+
+        });
+
+    });
+
+    if(
+        items.length === 0
+    ){
+
+        toast(
+            "Belum ada produk"
+        );
+
+        return;
+
+    }
+
+    try{
+
+        loadingOn();
+
+        for(
+            const item
+            of items
+        ){
+
+            await apiPost({
+
+                action:
+                    "tambah_makanan",
+
+                nama:
+                    item.nama,
+
+                berat:
+                    item.berat,
+
+                qty:
+                    item.qty,
+
+                harga:
+                    item.harga
+
+            });
+
+        }
+
+        toast(
+            "Produk bal berhasil disimpan"
+        );
+
+        $("#balItems")
+        .innerHTML = "";
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+        toast(
+            "Gagal simpan produk"
+        );
+
+    }
+
+    loadingOff();
+    await loadSemuaData();
+
+}
+
+function tambahBarisPack(){
+
+    const row =
+        document.createElement(
+            "div"
+        );
+
+    row.className =
+        "item-row";
+
+    row.innerHTML = `
+
+        <select class="packParent">
+            <option value="">
+                Pilih Produk Bal
+            </option>
+
+            ${makananData.map(item => `
+                <option value="${item.kode}">
+                    ${item.nama}
+                    (${item.stok})
+                </option>
+            `).join("")}
+
+        </select>
+
+        <input
+            class="packNama"
+            placeholder="Nama Pack">
+
+        <input
+            class="packBerat"
+            placeholder="Berat">
+
+        <input
+            class="packAmbil"
+            placeholder="Qty Ambil">
+
+        <input
+            class="packHasil"
+            placeholder="Qty Hasil">
+
+        <input
+            class="packHarga"
+            placeholder="Harga Jual">
+
+        <button
+            type="button"
+            class="item-remove">
+
+            ×
+
+        </button>
+
+    `;
+
+    row.querySelector(
+        ".item-remove"
+    ).onclick = () => {
+
+        row.remove();
+
+    };
+
+    $("#packItems")
+    .appendChild(row);
+
+}
+
+async function simpanPack(){
+
+    const rows =
+        $$("#packItems .item-row");
+
+    if(
+        rows.length === 0
+    ){
+
+        toast(
+            "Belum ada konversi"
+        );
+
+        return;
+
+    }
+
+    loadingOn();
+
+    try{
+
+        for(const row of rows){
+
+            const parent =
+                row.querySelector(
+                    ".packParent"
+                ).value;
+
+            const nama =
+                row.querySelector(
+                    ".packNama"
+                ).value.trim();
+
+            const berat =
+                row.querySelector(
+                    ".packBerat"
+                ).value.trim()
+                || "Default";
+
+            const qtyAmbil =
+                Number(
+                    row.querySelector(
+                        ".packAmbil"
+                    ).value
+                ) || 0;
+
+            const qtyHasil =
+                Number(
+                    row.querySelector(
+                        ".packHasil"
+                    ).value
+                ) || 0;
+
+            const harga =
+                parseRupiah(
+                    row.querySelector(
+                        ".packHarga"
+                    ).value
+                );
+
+            if(
+                !parent ||
+                !nama
+            ){
+                continue;
+            }
+
+            await apiPost({
+
+                action:
+                    "tambah_konversi",
+
+                parent,
+
+                nama,
+
+                berat,
+
+                qtyAmbil,
+
+                qtyHasil,
+
+                harga
+
+            });
+
+        }
+
+        toast(
+            "Konversi berhasil"
+        );
+
+        $("#packItems")
+        .innerHTML = "";
+
+        await loadSemuaData();
+
+    }
+
+    catch(err){
+
+        console.error(err);
+
+        toast(
+            "Gagal konversi"
+        );
+
+    }
+
+    loadingOff();
+    await loadSemuaData();
+
+}
+
+function renderMakananBal(){
+    const tbody =
+        $("#tblBal tbody");
+
+    tbody.innerHTML = "";
+
+    if(makananData.length === 0){
+
+        renderEmptyTable(
+            tbody,
+            6
+        );
+
+        return;
+    }
+
+    makananData.forEach(item => {
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.kode}</td>
+                <td>${item.nama}</td>
+                <td>${item.kategori}</td>
+                <td>${item.berat}</td>
+                <td>${formatRupiah(item.harga)}</td>
+                <td>${item.stok}</td>
+            </tr>
+        `;
+
+    });
+
+}
+
+function renderMakananPack(){
+
+    const tbody =
+        $("#tblPack tbody");
+
+    tbody.innerHTML = "";
+
+    if(konversiData.length === 0){
+
+        renderEmptyTable(
+            tbody,
+            7
+        );
+
+        return;
+    }
+
+    konversiData.forEach(item => {
+
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.kode}</td>
+                <td>${item.parent}</td>
+                <td>${item.nama}</td>
+                <td>${item.kategori}</td>
+                <td>${item.berat}</td>
+                <td>${formatRupiah(item.harga)}</td>
+                <td>${item.stok}</td>
+            </tr>
+        `;
+
+    });
+
+}
 
 </script>
 

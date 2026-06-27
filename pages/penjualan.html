@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Penjualan</title>
+    <title>Catatan Penjualan</title>
 
     <link rel="icon" type="image/png" href="../icon.png">
     <link rel="apple-touch-icon" href="../icon.png">
@@ -21,7 +21,7 @@
         Kembali
     </button>
 
-    <h1>Laporan Penjualan</h1>
+    <h1>Catatan Penjualan</h1>
 </div>
 
 <div class="isian">
@@ -92,11 +92,13 @@ let kategoriAktif = "semua";
 
 async function loadPenjualan() {
 
-    const data = await apiGet("penjualan_semua");
+    const data = await apiGet("Laporan_Semua");
 
     semuaData = data;
 
-    renderPenjualan();
+    totalPenjualanHari(
+  tanggal
+);
 }
 
 /* =========================

@@ -1346,6 +1346,200 @@ tbody tr:hover {
 
 }
 
+/* SEARCH BOX */
+.search-box {
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.search-box input {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 18px;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+
+    transition: 0.3s;
+}
+
+.search-box input:focus {
+    box-shadow: 0 6px 18px rgba(139,195,74,0.5);
+    transform: scale(1.02);
+}
+
+/* =====================================
+   NAV CARD STYLE – MIRIP PROJECT SEKAI
+===================================== */
+
+.nav-grid {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.nav-card {
+    background: white;
+    width: 240px;
+    padding: 30px 20px;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+    cursor: pointer;
+    transition: 0.25s;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: 3px solid transparent;
+}
+
+.nav-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: var(--green-main);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+}
+
+/* =====================================
+   PRODUK GRID
+===================================== */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    border: 3px solid transparent;
+    transition: 0.28s;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.card.selected {
+    border-color: var(--green-main);
+    transform: translateY(-5px) scale(1.06);
+}
+
+.card.habis {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* =====================================
+   CART FOOTER
+===================================== */
+
+.footer-cart {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #ffffffee;
+    backdrop-filter: blur(8px);
+    border-radius: 22px 22px 0 0;
+    padding: 20px;
+    transform: translateY(110%);
+    transition: 0.45s ease;
+    box-shadow: 0 -8px 25px rgba(0,0,0,0.25);
+    max-height: 50vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-cart.visible {
+    transform: translateY(0);
+}
+
+/* Tulisan "Keranjang" agar lebih beda */
+.footer-cart > div:first-child {
+    font-size: 1.2rem;
+    font-weight: 900 !important;
+    color: var(--green-dark);
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--green-light);
+    padding-bottom: 5px;
+}
+
+#cartList {
+    max-height: 220px; 
+    overflow-y: auto; /* Bisa di-scroll atas bawah */
+    margin-bottom: 15px;
+    padding-right: 5px;
+}
+
+/* Informasi Item (Nama & Harga) */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+.cart-item div:first-child {
+    font-size: 15px; /* Font item diperbesar sedikit */
+    font-weight: 600;
+}
+
+/* Tombol + dan - agar tidak terlalu lebar */
+.qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 100px;
+    justify-content: flex-end;
+}
+
+.qty-btn {
+    width: 30px !important; /* Ukuran tombol kotak mungil */
+    height: 30px !important;
+    padding: 0 !important;
+    line-height: 30px;
+    border-radius: 8px !important;
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Bagian Total Harga */
+#totalPrice {
+    font-size: 1.4rem !important; /* Lebih besar */
+    font-weight: 900 !important;
+    color: #e67e22; /* Warna orange agar mencolok dibanding hijau */
+    white-space: nowrap; /* Mencegah Rp dan angka terpisah */
+}
+
+/* Baris khusus tombol kirim di bawah */
+.cart-action-row {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.btn-kirim {
+    width: 100% !important;
+    padding: 15px !important;
+    font-size: 1.1rem !important;
+    font-weight: bold;
+    border-radius: 12px;
+}
+
+
 
 /* =======================================================
    MOBILE
@@ -1418,6 +1612,15 @@ tbody tr:hover {
 
     }
 
+}
+
+.sub-header{
+    grid-column: 1 / -1;
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: -5px;
+    color: var(--primary);
 }
 
 

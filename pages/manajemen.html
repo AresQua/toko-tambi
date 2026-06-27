@@ -587,193 +587,54 @@
         <!-- PRODUK MINUMAN -->
         <!-- ====================================== -->
 
-        <div
-            id="secProdukMinuman"
-            class="hidden">
-
-            <h3>
-                Varian
-            </h3>
-
-            <div
-                class="option-group"
-                id="optVarian">
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Varian','Teh',this)">
-
-                    Teh
-
-                </div>
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Varian','Smoothies',this)">
-
-                    Smoothies
-
-                </div>
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Varian','Jus',this)">
-
-                    Jus
-
-                </div>
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Varian','Hot',this)">
-
-                    Hot
-
-                </div>
-
-            </div>
-
-
-            <h3>
-                Topping
-            </h3>
-
-            <div
-                class="option-group"
-                id="optTopping">
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Topping','Susu',this)">
-
-                    Susu
-
-                </div>
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Topping','Boba',this)">
-
-                    Boba
-
-                </div>
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Topping','Cookies',this)">
-
-                    Cookies
-
-                </div>
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Topping','Default',this)">
-
-                    Default
-
-                </div>
-
-            </div>
-
-
-            <h3>
-                Nama Produk
-            </h3>
-
-            <input
-                id="minumNama"
-                placeholder="Nama Produk">
-
-
-            <h3>
-                Ukuran
-            </h3>
-
-            <div
-                class="option-group"
-                id="optUkuran">
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Ukuran','Besar',this)">
-
-                    Besar
-
-                </div>
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Ukuran','Kecil',this)">
-
-                    Kecil
-
-                </div>
-
-                <div
-                    class="option-item"
-                    onclick="setOpt('Ukuran','Default',this)">
-
-                    Default
-
-                </div>
-
-            </div>
-
-
-            <h3>
-                Harga
-            </h3>
-
-            <input
-                id="minumHarga">
-
-
-            <button
-                onclick="simpanMinuman()">
-
-                Simpan Produk
-
-            </button>
-
-
-            <div class="table-container">
-
-                <table
-                    id="tblMinuman">
-
-                    <thead>
-
-                    <tr>
-
-                        <th>Kode</th>
-
-                        <th>Varian</th>
-
-                        <th>Nama</th>
-
-                        <th>Topping</th>
-
-                        <th>Ukuran</th>
-
-                        <th>Harga</th>
-
-                    </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
+        <div id="secMinum">
+        <h3>Varian</h3>
+        <div class="option-group" id="optVarian">
+            <div class="option-item" onclick="setOpt('Varian', 'Teh', this)">Teh</div>
+            <div class="option-item" onclick="setOpt('Varian', 'Smoothies', this)">Smoothies</div>
+            <div class="option-item" onclick="setOpt('Varian', 'Jus', this)">Jus</div>
+            <div class="option-item" onclick="setOpt('Varian', 'Hot', this)">Hot</div>
+        </div>
+        
+        <h3>Topping</h3>
+        <div class="option-group" id="optTopping">
+            <div class="option-item" onclick="setOpt('Topping', 'Susu', this)">Susu</div>
+            <div class="option-item" onclick="setOpt('Topping', 'Boba', this)">Boba</div>
+            <div class="option-item" onclick="setOpt('Topping', 'Cookies', this)">Cookies</div>
+            <div class="option-item" onclick="setOpt('Topping', 'Default', this)">Default</div>
         </div>
 
-        </section>
+        <h3>Nama Produk</h3>
+        <input id="minumNama" placeholder="Nama Produk">
 
+        <h3>Ukuran</h3>
+        <div class="option-group" id="optUkuran">
+            <div class="option-item" onclick="setOpt('Ukuran', 'Besar', this)">Besar</div>
+            <div class="option-item" onclick="setOpt('Ukuran', 'Kecil', this)">Kecil</div>
+            <div class="option-item" onclick="setOpt('Ukuran', 'Default', this)">Default</div>
+        </div>
+
+        <h3>Harga</h3>
+        <input id="minumHarga" type="text" inputmode="numeric" inputmode="numeric" placeholder="Harga">
+        <button onclick="simpanMinuman()">Simpan Minuman</button>
+
+        <div class="table-container">
+        <table id="tabelMinum">
+        <thead>
+            <tr>
+                <th>Kode</th>
+                <th>Kategori</th>
+                <th>Varian</th>
+                <th>Nama</th>
+                <th>Topping</th>
+                <th>Ukuran</th>
+                <th>Harga</th>
+                <th>Waktu</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        </table>
+        </div>
 
         <!-- ====================================== -->
         <!-- OPERASIONAL -->
@@ -2405,6 +2266,73 @@ function renderMakananPack(){
     });
 
 }
+
+    function resetMinumanForm() {
+        // reset state
+        minData = {};
+
+        // hapus semua active
+        document.querySelectorAll("#secMinum .option-item")
+            .forEach(el => el.classList.remove("active"));
+
+        // reset input
+        qs("#minumNama").value = "";
+        qs("#minumHarga").value = "";
+    }
+
+    async function simpanMinuman() {
+        const nama = qs("#minumNama").value.trim();
+        const harga = parseAngka(qs("#minumHarga").value);
+
+        if (!nama || !harga || !minData.Varian || !minData.Topping || !minData.Ukuran) {
+            alert("Lengkapi data");
+            return;
+        }
+
+        showToast("Berhasil ditambahkan!");
+
+        const res = await apiPost({
+            action: "tambah_minuman",
+            nama: nama,
+            harga: harga,
+            varian: minData.Varian,
+            topping: minData.Topping,
+            ukuran: minData.Ukuran
+        });
+
+        if (res.status === "success") {
+            resetMinumanForm();
+            loadMinuman();
+        } else {
+            alert(res.message);
+        }
+    }
+
+    async function loadMinuman() {
+        const data = await apiGet("minuman");
+
+        renderMinuman(data);
+    }
+
+    function renderMinuman(data) {
+        const tb = qs("#tabelMinum tbody");
+
+        tb.innerHTML = "";
+
+        data.forEach(d => {
+            tb.innerHTML += `
+            <tr>
+                <td>${d.kode}</td>
+                <td>${d.kategori}</td>
+                <td>${d.varian}</td>
+                <td>${d.nama}</td>
+                <td>${d.topping}</td>
+                <td>${d.ukuran}</td>
+                <td>${formatRupiah(d.harga)}</td>
+                <td>${d.waktu}</td>
+            </tr>`;
+        });
+    }
 
 </script>
 
